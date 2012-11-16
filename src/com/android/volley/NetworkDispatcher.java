@@ -122,7 +122,7 @@ public class NetworkDispatcher extends Thread {
             } catch (VolleyError volleyError) {
                 parseAndDeliverNetworkError(request, volleyError);
             } catch (Exception e) {
-                VolleyLog.e("Unhandled exception %s", e.toString());
+                VolleyLog.e(e, "Unhandled exception %s", e.toString());
                 mDelivery.postError(request, new VolleyError(e));
             }
         }
