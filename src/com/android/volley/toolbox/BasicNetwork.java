@@ -92,10 +92,11 @@ public class BasicNetwork implements Network {
                 addCacheHeaders(headers, request.getCacheEntry());
                 httpResponse = mHttpStack.performRequest(request, headers);
                 StatusLine statusLine = httpResponse.getStatusLine();
+                int statusCode = statusLine.getStatusCode();
 
                 responseHeaders = convertHeaders(httpResponse.getAllHeaders());
                 // Handle cache validation.
-                if (statusLine.getStatusCode() == HttpStatus.SC_NOT_MODIFIED) {
+                if (statusCode == HttpStatus.SC_NOT_MODIFIED) {
                     return new NetworkResponse(HttpStatus.SC_NOT_MODIFIED,
                             request.getCacheEntry().data, responseHeaders, true);
                 }
@@ -105,11 +106,10 @@ public class BasicNetwork implements Network {
                 long requestLifetime = SystemClock.elapsedRealtime() - requestStart;
                 logSlowRequests(requestLifetime, request, responseContents, statusLine);
 
-                if (statusLine.getStatusCode() != HttpStatus.SC_OK) {
+                if (statusCode != HttpStatus.SC_OK && statusCode != HttpStatus.SC_NO_CONTENT) {
                     throw new IOException();
                 }
-                return new NetworkResponse(HttpStatus.SC_OK,
-                        responseContents, responseHeaders, false);
+                return new NetworkResponse(statusCode, responseContents, responseHeaders, false);
             } catch (SocketTimeoutException e) {
                 attemptRetryOnException("socket", request, new TimeoutError());
             } catch (ConnectTimeoutException e) {
