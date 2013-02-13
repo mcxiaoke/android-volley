@@ -187,19 +187,6 @@ public class HurlStack implements HttpStack {
                 addBodyIfExists(connection, request);
                 connection.setRequestMethod("PUT");
                 break;
-            case Method.HEAD:
-                connection.setRequestMethod("HEAD");
-                break;
-            case Method.OPTIONS:
-                connection.setRequestMethod("OPTIONS");
-                break;
-            case Method.TRACE:
-                connection.setRequestMethod("TRACE");
-                break;
-            case Method.PATCH:
-                addBodyIfExists(connection, request);
-                connection.setRequestMethod("PATCH");
-                break;
             default:
                 throw new IllegalStateException("Unknown method type.");
         }

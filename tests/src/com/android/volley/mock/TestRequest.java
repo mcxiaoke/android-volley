@@ -133,47 +133,4 @@ public class TestRequest {
             super(Method.DELETE, TEST_URL, null);
         }
     }
-
-    /** Test example of a HEAD request in the new style. */
-    public static class Head extends Base {
-        public Head() {
-            super(Method.HEAD, TEST_URL, null);
-        }
-    }
-
-    /** Test example of a OPTIONS request in the new style. */
-    public static class Options extends Base {
-        public Options() {
-            super(Method.OPTIONS, TEST_URL, null);
-        }
-    }
-
-    /** Test example of a TRACE request in the new style. */
-    public static class Trace extends Base {
-        public Trace() {
-            super(Method.TRACE, TEST_URL, null);
-        }
-    }
-
-    /** Test example of a PATCH request in the new style. */
-    public static class Patch extends Base {
-        public Patch() {
-            super(Method.PATCH, TEST_URL, null);
-        }
-    }
-
-    /** Test example of a PATCH request in the new style with a body. */
-    public static class PatchWithBody extends Patch {
-        private Map<String, String> mParams = new HashMap<String, String>();
-
-        public PatchWithBody() {
-            mParams = new HashMap<String, String>();
-            mParams.put("testKey", "testValue");
-        }
-
-        @Override
-        public Map<String, String> getParams() {
-            return mParams;
-        }
-    }
 }
