@@ -40,6 +40,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLSocketFactory;
+
 /**
  * An {@link HttpStack} based on {@link HttpURLConnection}.
  */
@@ -59,6 +62,7 @@ public class HurlStack implements HttpStack {
     }
 
     private final UrlRewriter mUrlRewriter;
+    private final SSLSocketFactory mSslSocketFactory;
 
     public HurlStack() {
         this(null);
@@ -68,7 +72,16 @@ public class HurlStack implements HttpStack {
      * @param urlRewriter Rewriter to use for request URLs
      */
     public HurlStack(UrlRewriter urlRewriter) {
+        this(urlRewriter, null);
+    }
+
+    /**
+     * @param urlRewriter Rewriter to use for request URLs
+     * @param sslSocketFactory SSL factory to use for HTTPS connections
+     */
+    public HurlStack(UrlRewriter urlRewriter, SSLSocketFactory sslSocketFactory) {
         mUrlRewriter = urlRewriter;
+        mSslSocketFactory = sslSocketFactory;
     }
 
     @Override
@@ -146,6 +159,12 @@ public class HurlStack implements HttpStack {
         connection.setReadTimeout(timeoutMs);
         connection.setUseCaches(false);
         connection.setDoInput(true);
+
+        // use caller-provided custom SslSocketFactory, if any, for HTTPS
+        if ("https".equals(url.getProtocol()) && mSslSocketFactory != null) {
+            ((HttpsURLConnection)connection).setSSLSocketFactory(mSslSocketFactory);
+        }
+
         return connection;
     }
 
@@ -180,12 +199,12 @@ public class HurlStack implements HttpStack {
                 connection.setRequestMethod("DELETE");
                 break;
             case Method.POST:
-                addBodyIfExists(connection, request);
                 connection.setRequestMethod("POST");
+                addBodyIfExists(connection, request);
                 break;
             case Method.PUT:
-                addBodyIfExists(connection, request);
                 connection.setRequestMethod("PUT");
+                addBodyIfExists(connection, request);
                 break;
             default:
                 throw new IllegalStateException("Unknown method type.");
