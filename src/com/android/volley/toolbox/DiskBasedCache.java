@@ -72,12 +72,6 @@ public class DiskBasedCache implements Cache {
     public DiskBasedCache(File rootDirectory, int maxCacheSizeInBytes) {
         mRootDirectory = rootDirectory;
         mMaxCacheSizeInBytes = maxCacheSizeInBytes;
-
-        if (!mRootDirectory.exists()) {
-            if (!mRootDirectory.mkdirs()) {
-                VolleyLog.e("Unable to create cache dir %s", mRootDirectory.getAbsolutePath());
-            }
-        }
     }
 
     /**
@@ -140,10 +134,17 @@ public class DiskBasedCache implements Cache {
 
     /**
      * Initializes the DiskBasedCache by scanning for all files currently in the
-     * specified root directory.
+     * specified root directory. Creates the root directory if necessary.
      */
     @Override
     public synchronized void initialize() {
+        if (!mRootDirectory.exists()) {
+            if (!mRootDirectory.mkdirs()) {
+                VolleyLog.e("Unable to create cache dir %s", mRootDirectory.getAbsolutePath());
+            }
+            return;
+        }
+
         File[] files = mRootDirectory.listFiles();
         if (files == null) {
             return;
