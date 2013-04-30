@@ -16,11 +16,14 @@
 
 package com.android.volley;
 
-import com.android.volley.VolleyLog.MarkerLog;
-
+import android.net.TrafficStats;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
+import android.text.TextUtils;
+
+import com.android.volley.VolleyLog.MarkerLog;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -58,6 +61,9 @@ public abstract class Request<T> implements Comparable<Request<T>> {
 
     /** URL of this request. */
     private final String mUrl;
+
+    /** Default tag for {@link TrafficStats}. */
+    private final int mDefaultTrafficStatsTag;
 
     /** Listener interface for errors. */
     private final Response.ErrorListener mErrorListener;
@@ -119,6 +125,8 @@ public abstract class Request<T> implements Comparable<Request<T>> {
         mUrl = url;
         mErrorListener = listener;
         setRetryPolicy(new DefaultRetryPolicy());
+
+        mDefaultTrafficStatsTag = TextUtils.isEmpty(url) ? 0: Uri.parse(url).getHost().hashCode();
     }
 
     /**
@@ -142,6 +150,13 @@ public abstract class Request<T> implements Comparable<Request<T>> {
      */
     public Object getTag() {
         return mTag;
+    }
+
+    /**
+     * @return A tag for use with {@link TrafficStats#setThreadStatsTag(int)}
+     */
+    public int getTrafficStatsTag() {
+        return mDefaultTrafficStatsTag;
     }
 
     /**
@@ -521,6 +536,8 @@ public abstract class Request<T> implements Comparable<Request<T>> {
 
     @Override
     public String toString() {
-        return (mCanceled ? "[X] " : "[ ] ") + getUrl() + " " + getPriority() + " " + mSequence;
+        String trafficStatsTag = "0x" + Integer.toHexString(getTrafficStatsTag());
+        return (mCanceled ? "[X] " : "[ ] ") + getUrl() + " " + trafficStatsTag + " "
+                + getPriority() + " " + mSequence;
     }
 }
