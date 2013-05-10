@@ -456,8 +456,8 @@ public class DiskBasedCache implements Cache {
                     ? Collections.<String, String>emptyMap()
                     : new HashMap<String, String>(size);
             for (int i = 0; i < size; i++) {
-                String key = ois.readUTF();
-                String value = ois.readUTF();
+                String key = ois.readUTF().intern();
+                String value = ois.readUTF().intern();
                 result.put(key, value);
             }
             return result;
