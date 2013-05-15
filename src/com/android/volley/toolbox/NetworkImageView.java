@@ -16,7 +16,6 @@
 package com.android.volley.toolbox;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.widget.ImageView;
@@ -43,6 +42,9 @@ public class NetworkImageView extends ImageView {
 
     /** Local copy of the ImageLoader. */
     private ImageLoader mImageLoader;
+
+    /** Current ImageContainer. (either in-flight or finished) */
+    private ImageContainer mImageContainer;
 
     public NetworkImageView(Context context) {
         this(context, null);
@@ -106,23 +108,22 @@ public class NetworkImageView extends ImageView {
         // if the URL to be loaded in this view is empty, cancel any old requests and clear the
         // currently loaded image.
         if (TextUtils.isEmpty(mUrl)) {
-            ImageContainer oldContainer = (ImageContainer) getTag();
-            if (oldContainer != null) {
-                oldContainer.cancelRequest();
-                setImageBitmap(null);
+            if (mImageContainer != null) {
+                mImageContainer.cancelRequest();
+                mImageContainer = null;
             }
+            setImageBitmap(null);
             return;
         }
 
-        ImageContainer oldContainer = (ImageContainer) getTag();
         // if there was an old request in this view, check if it needs to be canceled.
-        if (oldContainer != null && oldContainer.getRequestUrl() != null) {
-            if (oldContainer.getRequestUrl().equals(mUrl)) {
+        if (mImageContainer != null && mImageContainer.getRequestUrl() != null) {
+            if (mImageContainer.getRequestUrl().equals(mUrl)) {
                 // if the request is from the same URL, return.
                 return;
             } else {
                 // if there is a pre-existing request, cancel it if it's fetching a different URL.
-                oldContainer.cancelRequest();
+                mImageContainer.cancelRequest();
                 setImageBitmap(null);
             }
         }
@@ -132,14 +133,8 @@ public class NetworkImageView extends ImageView {
         ImageContainer newContainer = mImageLoader.get(mUrl,
                 ImageLoader.getImageListener(this, mDefaultImageId, mErrorImageId));
 
-        // update the tag to be the new bitmap container.
-        setTag(newContainer);
-
-        // look at the contents of the new container. if there is a bitmap, load it.
-        final Bitmap bitmap = newContainer.getBitmap();
-        if (bitmap != null) {
-            setImageBitmap(bitmap);
-        }
+        // update the ImageContainer to be the new bitmap container.
+        mImageContainer = newContainer;
     }
 
     @Override
@@ -150,14 +145,13 @@ public class NetworkImageView extends ImageView {
 
     @Override
     protected void onDetachedFromWindow() {
-        ImageContainer oldContainer = (ImageContainer) getTag();
-        if (oldContainer != null) {
+        if (mImageContainer != null) {
             // If the view was bound to an image request, cancel it and clear
             // out the image from the view.
-            oldContainer.cancelRequest();
+            mImageContainer.cancelRequest();
             setImageBitmap(null);
-            // also clear out the tag so we can reload the image if necessary.
-            setTag(null);
+            // also clear out the container so we can reload the image if necessary.
+            mImageContainer = null;
         }
         super.onDetachedFromWindow();
     }
