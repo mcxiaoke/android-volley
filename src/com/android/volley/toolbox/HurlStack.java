@@ -146,13 +146,20 @@ public class HurlStack implements HttpStack {
     }
 
     /**
+     * Create an {@link HttpURLConnection} for the specified {@code url}.
+     */
+    protected HttpURLConnection createConnection(URL url) throws IOException {
+        return (HttpURLConnection) url.openConnection();
+    }
+
+    /**
      * Opens an {@link HttpURLConnection} with parameters.
      * @param url
      * @return an open connection
      * @throws IOException
      */
     private HttpURLConnection openConnection(URL url, Request<?> request) throws IOException {
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        HttpURLConnection connection = createConnection(url);
 
         int timeoutMs = request.getTimeoutMs();
         connection.setConnectTimeout(timeoutMs);
