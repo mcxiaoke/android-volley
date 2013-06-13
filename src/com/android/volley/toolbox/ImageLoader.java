@@ -144,6 +144,20 @@ public class ImageLoader {
     }
 
     /**
+     * Checks if the item is available in the cache.
+     * @param requestUrl The url of the remote image
+     * @param maxWidth The maximum width of the returned image.
+     * @param maxHeight The maximum height of the returned image.
+     * @return True if the item exists in cache, false otherwise.
+     */
+    public boolean isCached(String requestUrl, int maxWidth, int maxHeight) {
+        throwIfNotOnMainThread();
+
+        String cacheKey = getCacheKey(requestUrl, maxWidth, maxHeight);
+        return mCache.getBitmap(cacheKey) != null;
+    }
+
+    /**
      * Returns an ImageContainer for the requested URL.
      *
      * The ImageContainer will contain either the specified default bitmap or the loaded bitmap.
@@ -248,7 +262,7 @@ public class ImageLoader {
             request.mResponseBitmap = response;
 
             // Send the batched response
-            batchResponse(cacheKey, request, null);
+            batchResponse(cacheKey, request);
         }
     }
 
@@ -261,9 +275,12 @@ public class ImageLoader {
         // Remove this request from the list of in-flight requests.
         BatchedImageRequest request = mInFlightRequests.remove(cacheKey);
 
+        // Set the error for this request
+        request.setError(error);
+
         if (request != null) {
             // Send the batched response
-            batchResponse(cacheKey, request, error);
+            batchResponse(cacheKey, request);
         }
     }
 
@@ -351,6 +368,9 @@ public class ImageLoader {
         /** The result of the request being tracked by this item */
         private Bitmap mResponseBitmap;
 
+        /** Error if one occurred for this response */
+        private VolleyError mError;
+
         /** List of all of the active ImageContainers that are interested in the request */
         private final LinkedList<ImageContainer> mContainers = new LinkedList<ImageContainer>();
 
@@ -362,6 +382,20 @@ public class ImageLoader {
         public BatchedImageRequest(Request<?> request, ImageContainer container) {
             mRequest = request;
             mContainers.add(container);
+        }
+
+        /**
+         * Set the error for this response
+         */
+        public void setError(VolleyError error) {
+            mError = error;
+        }
+
+        /**
+         * Get the error for this response
+         */
+        public VolleyError getError() {
+            return mError;
         }
 
         /**
@@ -394,8 +428,7 @@ public class ImageLoader {
      * @param request The BatchedImageRequest to be delivered.
      * @param error The volley error associated with the request (if applicable).
      */
-    private void batchResponse(String cacheKey, BatchedImageRequest request,
-            final VolleyError error) {
+    private void batchResponse(String cacheKey, BatchedImageRequest request) {
         mBatchedResponses.put(cacheKey, request);
         // If we don't already have a batch delivery runnable in flight, make a new one.
         // Note that this will be used to deliver responses to all callers in mBatchedResponses.
@@ -411,11 +444,11 @@ public class ImageLoader {
                             if (container.mListener == null) {
                                 continue;
                             }
-                            if (error == null) {
+                            if (bir.getError() == null) {
                                 container.mBitmap = bir.mResponseBitmap;
                                 container.mListener.onResponse(container, false);
                             } else {
-                                container.mListener.onErrorResponse(error);
+                                container.mListener.onErrorResponse(bir.getError());
                             }
                         }
                     }
