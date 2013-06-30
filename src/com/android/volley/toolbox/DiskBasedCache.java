@@ -21,14 +21,13 @@ import android.os.SystemClock;
 import com.android.volley.Cache;
 import com.android.volley.VolleyLog;
 
+import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.Collections;
 import java.util.HashMap;
@@ -61,8 +60,8 @@ public class DiskBasedCache implements Cache {
     /** High water mark percentage for the cache */
     private static final float HYSTERESIS_FACTOR = 0.9f;
 
-    /** Current cache version */
-    private static final int CACHE_VERSION = 2;
+    /** Magic number for current version of cache file format. */
+    private static final int CACHE_MAGIC = 0x20120504;
 
     /**
      * Constructs an instance of the DiskBasedCache at the specified directory.
@@ -329,7 +328,8 @@ public class DiskBasedCache implements Cache {
     /**
      * Handles holding onto the cache headers for an entry.
      */
-    private static class CacheHeader {
+    // Visible for testing.
+    static class CacheHeader {
         /** The size of the data identified by this CacheHeader. (This is not
          * serialized to disk. */
         public long size;
@@ -376,21 +376,20 @@ public class DiskBasedCache implements Cache {
          */
         public static CacheHeader readHeader(InputStream is) throws IOException {
             CacheHeader entry = new CacheHeader();
-            ObjectInputStream ois = new ObjectInputStream(is);
-            int version = ois.readByte();
-            if (version != CACHE_VERSION) {
+            int magic = readInt(is);
+            if (magic != CACHE_MAGIC) {
                 // don't bother deleting, it'll get pruned eventually
                 throw new IOException();
             }
-            entry.key = ois.readUTF();
-            entry.etag = ois.readUTF();
+            entry.key = readString(is);
+            entry.etag = readString(is);
             if (entry.etag.equals("")) {
                 entry.etag = null;
             }
-            entry.serverDate = ois.readLong();
-            entry.ttl = ois.readLong();
-            entry.softTtl = ois.readLong();
-            entry.responseHeaders = readStringStringMap(ois);
+            entry.serverDate = readLong(is);
+            entry.ttl = readLong(is);
+            entry.softTtl = readLong(is);
+            entry.responseHeaders = readStringStringMap(is);
             return entry;
         }
 
@@ -408,20 +407,20 @@ public class DiskBasedCache implements Cache {
             return e;
         }
 
+
         /**
          * Writes the contents of this CacheHeader to the specified OutputStream.
          */
         public boolean writeHeader(OutputStream os) {
             try {
-                ObjectOutputStream oos = new ObjectOutputStream(os);
-                oos.writeByte(CACHE_VERSION);
-                oos.writeUTF(key);
-                oos.writeUTF(etag == null ? "" : etag);
-                oos.writeLong(serverDate);
-                oos.writeLong(ttl);
-                oos.writeLong(softTtl);
-                writeStringStringMap(responseHeaders, oos);
-                oos.flush();
+                writeInt(os, CACHE_MAGIC);
+                writeString(os, key);
+                writeString(os, etag == null ? "" : etag);
+                writeLong(os, serverDate);
+                writeLong(os, ttl);
+                writeLong(os, softTtl);
+                writeStringStringMap(responseHeaders, os);
+                os.flush();
                 return true;
             } catch (IOException e) {
                 VolleyLog.d("%s", e.toString());
@@ -429,39 +428,6 @@ public class DiskBasedCache implements Cache {
             }
         }
 
-        /**
-         * Writes all entries of {@code map} into {@code oos}.
-         */
-        private static void writeStringStringMap(Map<String, String> map, ObjectOutputStream oos)
-                throws IOException {
-            if (map != null) {
-                oos.writeInt(map.size());
-                for (Map.Entry<String, String> entry : map.entrySet()) {
-                    oos.writeUTF(entry.getKey());
-                    oos.writeUTF(entry.getValue());
-                }
-            } else {
-                oos.writeInt(0);
-            }
-        }
-
-        /**
-         * @return a string to string map which contains the entries read from {@code ois}
-         *     previously written by {@link #writeStringStringMap}
-         */
-        private static Map<String, String> readStringStringMap(ObjectInputStream ois)
-                throws IOException {
-            int size = ois.readInt();
-            Map<String, String> result = (size == 0)
-                    ? Collections.<String, String>emptyMap()
-                    : new HashMap<String, String>(size);
-            for (int i = 0; i < size; i++) {
-                String key = ois.readUTF().intern();
-                String value = ois.readUTF().intern();
-                result.put(key, value);
-            }
-            return result;
-        }
     }
 
     private static class CountingInputStream extends FilterInputStream {
@@ -489,4 +455,102 @@ public class DiskBasedCache implements Cache {
             return result;
         }
     }
+
+    /*
+     * Homebrewed simple serialization system used for reading and writing cache
+     * headers on disk. Once upon a time, this used the standard Java
+     * Object{Input,Output}Stream, but the default implementation relies heavily
+     * on reflection (even for standard types) and generates a ton of garbage.
+     */
+
+    /**
+     * Simple wrapper around {@link InputStream#read()} that throws EOFException
+     * instead of returning -1.
+     */
+    private static int read(InputStream is) throws IOException {
+        int b = is.read();
+        if (b == -1) {
+            throw new EOFException();
+        }
+        return b;
+    }
+
+    static void writeInt(OutputStream os, int n) throws IOException {
+        os.write((n >> 0) & 0xff);
+        os.write((n >> 8) & 0xff);
+        os.write((n >> 16) & 0xff);
+        os.write((n >> 24) & 0xff);
+    }
+
+    static int readInt(InputStream is) throws IOException {
+        int n = 0;
+        n |= (read(is) << 0);
+        n |= (read(is) << 8);
+        n |= (read(is) << 16);
+        n |= (read(is) << 24);
+        return n;
+    }
+
+    static void writeLong(OutputStream os, long n) throws IOException {
+        os.write((byte)(n >>> 0));
+        os.write((byte)(n >>> 8));
+        os.write((byte)(n >>> 16));
+        os.write((byte)(n >>> 24));
+        os.write((byte)(n >>> 32));
+        os.write((byte)(n >>> 40));
+        os.write((byte)(n >>> 48));
+        os.write((byte)(n >>> 56));
+    }
+
+    static long readLong(InputStream is) throws IOException {
+        long n = 0;
+        n |= ((read(is) & 0xFFL) << 0);
+        n |= ((read(is) & 0xFFL) << 8);
+        n |= ((read(is) & 0xFFL) << 16);
+        n |= ((read(is) & 0xFFL) << 24);
+        n |= ((read(is) & 0xFFL) << 32);
+        n |= ((read(is) & 0xFFL) << 40);
+        n |= ((read(is) & 0xFFL) << 48);
+        n |= ((read(is) & 0xFFL) << 56);
+        return n;
+    }
+
+    static void writeString(OutputStream os, String s) throws IOException {
+        byte[] b = s.getBytes("UTF-8");
+        writeLong(os, b.length);
+        os.write(b, 0, b.length);
+    }
+
+    static String readString(InputStream is) throws IOException {
+        int n = (int) readLong(is);
+        byte[] b = streamToBytes(is, n);
+        return new String(b, "UTF-8");
+    }
+
+    static void writeStringStringMap(Map<String, String> map, OutputStream os) throws IOException {
+        if (map != null) {
+            writeInt(os, map.size());
+            for (Map.Entry<String, String> entry : map.entrySet()) {
+                writeString(os, entry.getKey());
+                writeString(os, entry.getValue());
+            }
+        } else {
+            writeInt(os, 0);
+        }
+    }
+
+    static Map<String, String> readStringStringMap(InputStream is) throws IOException {
+        int size = readInt(is);
+        Map<String, String> result = (size == 0)
+                ? Collections.<String, String>emptyMap()
+                : new HashMap<String, String>(size);
+        for (int i = 0; i < size; i++) {
+            String key = readString(is).intern();
+            String value = readString(is).intern();
+            result.put(key, value);
+        }
+        return result;
+    }
+
+
 }
