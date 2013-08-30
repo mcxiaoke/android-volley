@@ -113,14 +113,14 @@ public class NetworkImageView extends ImageView {
             return;
         }
 
-        // if the URL to be loaded in this view is empty, cancel any old requests and clear the
-        // currently loaded image.
+        // if the URL to be loaded in this view is empty, cancel any old requests
+        // and set the error image.
         if (TextUtils.isEmpty(mUrl)) {
             if (mImageContainer != null) {
                 mImageContainer.cancelRequest();
                 mImageContainer = null;
             }
-            setImageBitmap(null);
+            setImageDrawable(getResources().getDrawable(mErrorImageId));
             return;
         }
 
