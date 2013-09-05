@@ -23,6 +23,7 @@ import android.os.Looper;
 import android.os.SystemClock;
 import android.text.TextUtils;
 
+import android.webkit.URLUtil;
 import com.android.volley.VolleyLog.MarkerLog;
 
 import java.io.UnsupportedEncodingException;
@@ -126,7 +127,20 @@ public abstract class Request<T> implements Comparable<Request<T>> {
         mErrorListener = listener;
         setRetryPolicy(new DefaultRetryPolicy());
 
-        mDefaultTrafficStatsTag = TextUtils.isEmpty(url) ? 0: Uri.parse(url).getHost().hashCode();
+        final Uri uri = parseUrl(url);
+        if(uri != null) {
+            mDefaultTrafficStatsTag = uri.getHost().hashCode();
+        } else {
+            mDefaultTrafficStatsTag = 0;
+        }
+    }
+
+    private Uri parseUrl(final String url) {
+        if(URLUtil.isValidUrl(url)) {
+            final Uri uri = Uri.parse(url);
+            return uri;
+        }
+        return null;
     }
 
     /**
