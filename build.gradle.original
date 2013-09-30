@@ -1,21 +1,8 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath 'com.android.tools.build:gradle:0.5.+'
-    }
-}
-
-apply plugin: 'android'
+apply plugin: 'android-library'
 
 android {
     compileSdkVersion 17
     buildToolsVersion = 17
-
-    group = 'com.android.volley'
-    version = "0.9.0"
 
     sourceSets {
         defaultConfig {
@@ -40,8 +27,4 @@ android {
             java.srcDirs      = ["tests/src"]
         }
     }
-}
-
-task jar(type: Jar) {
-    from android.sourceSets.main.java
 }
