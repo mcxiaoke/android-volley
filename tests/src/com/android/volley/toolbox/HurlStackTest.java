@@ -106,4 +106,49 @@ public class HurlStackTest extends AndroidTestCase {
         assertEquals("DELETE", mMockConnection.getRequestMethod());
         assertFalse(mMockConnection.getDoOutput());
     }
+
+    public void testConnectionForHeadRequest() throws Exception {
+        TestRequest.Head request = new TestRequest.Head();
+        assertEquals(request.getMethod(), Method.HEAD);
+
+        HurlStack.setConnectionParametersForRequest(mMockConnection, request);
+        assertEquals("HEAD", mMockConnection.getRequestMethod());
+        assertFalse(mMockConnection.getDoOutput());
+    }
+
+    public void testConnectionForOptionsRequest() throws Exception {
+        TestRequest.Options request = new TestRequest.Options();
+        assertEquals(request.getMethod(), Method.OPTIONS);
+
+        HurlStack.setConnectionParametersForRequest(mMockConnection, request);
+        assertEquals("OPTIONS", mMockConnection.getRequestMethod());
+        assertFalse(mMockConnection.getDoOutput());
+    }
+
+    public void testConnectionForTraceRequest() throws Exception {
+        TestRequest.Trace request = new TestRequest.Trace();
+        assertEquals(request.getMethod(), Method.TRACE);
+
+        HurlStack.setConnectionParametersForRequest(mMockConnection, request);
+        assertEquals("TRACE", mMockConnection.getRequestMethod());
+        assertFalse(mMockConnection.getDoOutput());
+    }
+
+    public void testConnectionForPatchRequest() throws Exception {
+        TestRequest.Patch request = new TestRequest.Patch();
+        assertEquals(request.getMethod(), Method.PATCH);
+
+        HurlStack.setConnectionParametersForRequest(mMockConnection, request);
+        assertEquals("PATCH", mMockConnection.getRequestMethod());
+        assertFalse(mMockConnection.getDoOutput());
+    }
+
+    public void testConnectionForPatchWithBodyRequest() throws Exception {
+        TestRequest.PatchWithBody request = new TestRequest.PatchWithBody();
+        assertEquals(request.getMethod(), Method.PATCH);
+
+        HurlStack.setConnectionParametersForRequest(mMockConnection, request);
+        assertEquals("PATCH", mMockConnection.getRequestMethod());
+        assertTrue(mMockConnection.getDoOutput());
+    }
 }

@@ -51,12 +51,19 @@ public abstract class Request<T> implements Comparable<Request<T>> {
         int POST = 1;
         int PUT = 2;
         int DELETE = 3;
+        int HEAD = 4;
+        int OPTIONS = 5;
+        int TRACE = 6;
+        int PATCH = 7;
     }
 
     /** An event log tracing the lifetime of this request; for debugging. */
     private final MarkerLog mEventLog = MarkerLog.ENABLED ? new MarkerLog() : null;
 
-    /** Request method of this request.  Currently supports GET, POST, PUT, and DELETE. */
+    /**
+     * Request method of this request.  Currently supports GET, POST, PUT, DELETE, HEAD, OPTIONS,
+     * TRACE, and PATCH.
+     */
     private final int mMethod;
 
     /** URL of this request. */
