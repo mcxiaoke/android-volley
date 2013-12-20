@@ -27,8 +27,11 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpHead;
+import org.apache.http.client.methods.HttpOptions;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpTrace;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.message.BasicNameValuePair;
@@ -36,6 +39,7 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -122,6 +126,18 @@ public class HttpClientStack implements HttpStack {
                 setEntityIfNonEmptyBody(putRequest, request);
                 return putRequest;
             }
+            case Method.HEAD:
+                return new HttpHead(request.getUrl());
+            case Method.OPTIONS:
+                return new HttpOptions(request.getUrl());
+            case Method.TRACE:
+                return new HttpTrace(request.getUrl());
+            case Method.PATCH: {
+                HttpPatch patchRequest = new HttpPatch(request.getUrl());
+                patchRequest.addHeader(HEADER_CONTENT_TYPE, request.getBodyContentType());
+                setEntityIfNonEmptyBody(patchRequest, request);
+                return patchRequest;
+            }
             default:
                 throw new IllegalStateException("Unknown request method.");
         }
@@ -143,5 +159,36 @@ public class HttpClientStack implements HttpStack {
      */
     protected void onPrepareRequest(HttpUriRequest request) throws IOException {
         // Nothing.
+    }
+
+    /**
+     * The HttpPatch class does not exist in the Android framework, so this has been defined here.
+     */
+    public static final class HttpPatch extends HttpEntityEnclosingRequestBase {
+
+        public final static String METHOD_NAME = "PATCH";
+
+        public HttpPatch() {
+            super();
+        }
+
+        public HttpPatch(final URI uri) {
+            super();
+            setURI(uri);
+        }
+
+        /**
+         * @throws IllegalArgumentException if the uri is invalid.
+         */
+        public HttpPatch(final String uri) {
+            super();
+            setURI(URI.create(uri));
+        }
+
+        @Override
+        public String getMethod() {
+            return METHOD_NAME;
+        }
+
     }
 }
