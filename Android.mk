@@ -28,5 +28,6 @@ include $(BUILD_STATIC_JAVA_LIBRARY)
 # TODO: Not yet.
 #$(call dist-for-goals, dist_files, $(LOCAL_BUILT_MODULE):volley.jar)
 
-# TODO: Build the tests as an APK here
+# Include build files in subdirectories
+include $(call all-makefiles-under,$(LOCAL_PATH))
 
