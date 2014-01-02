@@ -8,11 +8,11 @@ buildscript {
     }
 }
 
-apply plugin: 'android'
+apply plugin: 'android-library'
 
 allprojects {
-    group = 'com.mcxiaoke.volley'
-    version = "1.0.0"
+    group project.GROUP
+    version project.VERSION_NAME
 
     repositories {
         mavenCentral()
@@ -25,12 +25,12 @@ allprojects {
 
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion '19'
+    compileSdkVersion Integer.parseInt(project.ANDROID_BUILD_SDK_VERSION)
+    buildToolsVersion project.ANDROID_BUILD_TOOLS_VERSION
 
     defaultConfig {
         minSdkVersion 8
-        targetSdkVersion 19
+        targetSdkVersion Integer.parseInt(project.ANDROID_BUILD_TARGET_SDK_VERSION)
     }
 
     sourceSets {
@@ -94,3 +94,5 @@ android {
 task jar(type: Jar) {
     from android.sourceSets.main.java
 }
+
+apply from: 'https://raw.github.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'

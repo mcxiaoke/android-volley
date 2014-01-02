@@ -51,9 +51,9 @@
     </licenses>
 
     <scm>
-        <url>git@github.com:mcxiaoke/android-volley.git</url>
-        <developerConnection>git@github.com:mcxiaoke/android-volley.git</developerConnection>
-        <connection>git@github.com:mcxiaoke/android-volley.git</connection>
+        <url>https://github.com/mcxiaoke/android-volley</url>
+        <developerConnection>scm:git@github.com:mcxiaoke/android-volley.git</developerConnection>
+        <connection>scm:git@github.com:mcxiaoke/android-volley.git</connection>
     </scm>
 
     <issueManagement>
