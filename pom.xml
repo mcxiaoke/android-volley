@@ -4,7 +4,7 @@
 
     <groupId>com.mcxiaoke.volley</groupId>
     <artifactId>library</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>Android Volley Library</name>
     <description>Volley is a library from Android source code, which makes networking for Android apps easier and most
