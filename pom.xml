@@ -5,7 +5,7 @@
 
     <groupId>com.mcxiaoke.volley</groupId>
     <artifactId>library</artifactId>
-    <version>1.0.0</version>
+    <version>0.9.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Android Volley Library</name>
     <description>Volley is a library from Android source code, which makes networking for Android apps easier and most
@@ -52,8 +52,8 @@
 
     <scm>
         <url>https://github.com/mcxiaoke/android-volley</url>
-        <developerConnection>scm:git@github.com:mcxiaoke/android-volley.git</developerConnection>
-        <connection>scm:git@github.com:mcxiaoke/android-volley.git</connection>
+        <developerConnection>scm:git:git@github.com:mcxiaoke/android-volley.git</developerConnection>
+        <connection>scm:git:https://github.com/mcxiaoke/android-volley.git</connection>
     </scm>
 
     <issueManagement>
