@@ -51,7 +51,7 @@ public class RequestTest extends TestCase {
     private class TestRequest extends Request<Object> {
         private Priority mPriority = Priority.NORMAL;
         public TestRequest(Priority priority) {
-            super("", null);
+            super(Request.Method.GET, "", null);
             mPriority = priority;
         }
 

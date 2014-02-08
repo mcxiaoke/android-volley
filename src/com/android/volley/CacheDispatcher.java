@@ -29,16 +29,15 @@ import java.util.concurrent.BlockingQueue;
  * refresh are enqueued on the specified network queue for processing
  * by a {@link NetworkDispatcher}.
  */
-@SuppressWarnings("rawtypes")
 public class CacheDispatcher extends Thread {
 
     private static final boolean DEBUG = VolleyLog.DEBUG;
 
     /** The queue of requests coming in for triage. */
-    private final BlockingQueue<Request> mCacheQueue;
+    private final BlockingQueue<Request<?>> mCacheQueue;
 
     /** The queue of requests going out to the network. */
-    private final BlockingQueue<Request> mNetworkQueue;
+    private final BlockingQueue<Request<?>> mNetworkQueue;
 
     /** The cache to read from. */
     private final Cache mCache;
@@ -59,7 +58,7 @@ public class CacheDispatcher extends Thread {
      * @param delivery Delivery interface to use for posting responses
      */
     public CacheDispatcher(
-            BlockingQueue<Request> cacheQueue, BlockingQueue<Request> networkQueue,
+            BlockingQueue<Request<?>> cacheQueue, BlockingQueue<Request<?>> networkQueue,
             Cache cache, ResponseDelivery delivery) {
         mCacheQueue = cacheQueue;
         mNetworkQueue = networkQueue;
@@ -88,7 +87,7 @@ public class CacheDispatcher extends Thread {
             try {
                 // Get a request from the cache triage queue, blocking until
                 // at least one is available.
-                final Request request = mCacheQueue.take();
+                final Request<?> request = mCacheQueue.take();
                 request.addMarker("cache-queue-take");
 
                 // If the request has been canceled, don't bother dispatching it.
