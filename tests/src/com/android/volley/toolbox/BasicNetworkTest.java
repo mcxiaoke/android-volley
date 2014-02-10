@@ -47,7 +47,7 @@ public class BasicNetworkTest extends AndroidTestCase {
         fakeResponse.setEntity(new StringEntity("foobar"));
         mockHttpStack.setResponseToReturn(fakeResponse);
         BasicNetwork httpNetwork = new BasicNetwork(mockHttpStack);
-        Request<String> request = new Request<String>("http://foo", null) {
+        Request<String> request = new Request<String>(Request.Method.GET, "http://foo", null) {
 
             @Override
             protected Response<String> parseNetworkResponse(NetworkResponse response) {
@@ -66,7 +66,7 @@ public class BasicNetworkTest extends AndroidTestCase {
             }
 
             @Override
-            public Map<String, String> getPostParams() {
+            public Map<String, String> getParams() {
                 Map<String, String> result = new HashMap<String, String>();
                 result.put("requestpost", "foo");
                 return result;
