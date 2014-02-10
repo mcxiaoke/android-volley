@@ -213,7 +213,7 @@ public class RequestQueue {
      * @param request The request to service
      * @return The passed-in request
      */
-    public Request<?> add(Request<?> request) {
+    public <T> Request<T> add(Request<T> request) {
         // Tag the request as belonging to this queue and add it to the set of current requests.
         request.setRequestQueue(this);
         synchronized (mCurrentRequests) {
