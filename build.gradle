@@ -1,7 +1,16 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.8.+'
+    }
+}
+
 apply plugin: 'android-library'
 
 android {
-    compileSdkVersion 17
+    compileSdkVersion 19
     buildToolsVersion = '19.0.1'
 
     sourceSets {
@@ -20,12 +29,8 @@ android {
 
         }
 
-        instrumentTest {
-            assets.srcDirs    = ["tests/assets"]
-            res.srcDirs       = ["tests/res"]
-            resources.srcDirs = ["tests/src"]
-            java.srcDirs      = ["tests/src"]
-        }
+        instrumentTest.setRoot('tests')
+        instrumentTest.java.srcDirs = ['tests/src']
     }
     lintOptions {
         // TODO: fix errors and reenable.
