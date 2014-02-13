@@ -28,11 +28,11 @@ import java.util.Map;
 
 public class MockRequest extends Request<byte[]> {
     public MockRequest() {
-        super("http://foo.com", null);
+        super(Request.Method.GET, "http://foo.com", null);
     }
 
     public MockRequest(String url, ErrorListener listener) {
-        super(url, listener);
+        super(Request.Method.GET, url, listener);
     }
 
     private Map<String, String> mPostParams = new HashMap<String, String>();

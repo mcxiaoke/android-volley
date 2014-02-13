@@ -2,9 +2,8 @@ buildscript {
     repositories {
         mavenCentral()
     }
-
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.7.+'
+        classpath 'com.android.tools.build:gradle:0.8.+'
     }
 }
 
@@ -49,46 +48,14 @@ android {
 
         }
 
-        instrumentTest {
-            assets.srcDirs = ["tests/assets"]
-            res.srcDirs = ["tests/res"]
-            resources.srcDirs = ["tests/src"]
-            java.srcDirs = ["tests/src"]
-        }
+        instrumentTest.setRoot('tests')
+        instrumentTest.java.srcDirs = ['tests/src']
     }
 
-    lintOptions {
-        // set to true to turn off analysis progress reporting by lint
-        quiet false
-        // if true, stop the gradle build if errors are found
-        abortOnError false
-        // if true, only report errors
-        ignoreWarnings true
-        // if true, emit full/absolute paths to files with errors (true by default)
-        //absolutePaths true
-        // if true, check all issues, including those that are off by default
-        checkAllWarnings true
-        // if true, treat all warnings as errors
-        warningsAsErrors false
-        // turn off checking the given issue id's
-        disable 'TypographyFractions', 'TypographyQuotes'
-        // turn on the given issue id's
-        enable 'RtlHardcoded', 'RtlCompat', 'RtlEnabled'
-        // check *only* the given issue id's
-        check 'NewApi', 'InlinedApi'
-        // if true, don't include source code lines in the error output
-        noLines true
-        // if true, show all locations for an error, do not truncate lists, etc.
-        showAll true
-        // if true, generate a text report of issues (false by default)
-        textReport true
-        // location to write the output; can be a file or 'stdout'
-        textOutput 'stdout'
-        // if true, generate an XML report for use by for example Jenkins
-        xmlReport false
-        // if true, generate an HTML report (with issue explanations, sourcecode, etc)
-        htmlReport true
-    }
+    //lintOptions {
+     //   quiet true
+     //   abortOnError false
+    //}
 }
 
 apply from: 'https://raw.github.com/mcxiaoke/gradle-mvn-push/master/gradle-mvn-push.gradle'

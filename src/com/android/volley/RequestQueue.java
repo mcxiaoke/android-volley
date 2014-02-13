@@ -35,7 +35,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  * resolving from either cache or network on a worker thread, and then delivering
  * a parsed response on the main thread.
  */
-@SuppressWarnings("rawtypes")
 public class RequestQueue {
 
     /** Used for generating monotonically-increasing sequence numbers for requests. */
@@ -51,28 +50,28 @@ public class RequestQueue {
      *          is <em>not</em> contained in that list. Is null if no requests are staged.</li>
      * </ul>
      */
-    private final Map<String, Queue<Request>> mWaitingRequests =
-            new HashMap<String, Queue<Request>>();
+    private final Map<String, Queue<Request<?>>> mWaitingRequests =
+            new HashMap<String, Queue<Request<?>>>();
 
     /**
      * The set of all requests currently being processed by this RequestQueue. A Request
      * will be in this set if it is waiting in any queue or currently being processed by
      * any dispatcher.
      */
-    private final Set<Request> mCurrentRequests = new HashSet<Request>();
+    private final Set<Request<?>> mCurrentRequests = new HashSet<Request<?>>();
 
     /** The cache triage queue. */
-    private final PriorityBlockingQueue<Request> mCacheQueue =
-        new PriorityBlockingQueue<Request>();
+    private final PriorityBlockingQueue<Request<?>> mCacheQueue =
+        new PriorityBlockingQueue<Request<?>>();
 
     /** The queue of requests that are actually going out to the network. */
-    private final PriorityBlockingQueue<Request> mNetworkQueue =
-        new PriorityBlockingQueue<Request>();
+    private final PriorityBlockingQueue<Request<?>> mNetworkQueue =
+        new PriorityBlockingQueue<Request<?>>();
 
     /** Number of network request dispatcher threads to start. */
     private static final int DEFAULT_NETWORK_THREAD_POOL_SIZE = 4;
 
-    /** Cache interface for retrieving and storing respones. */
+    /** Cache interface for retrieving and storing responses. */
     private final Cache mCache;
 
     /** Network interface for performing requests. */
@@ -214,7 +213,7 @@ public class RequestQueue {
      * @param request The request to service
      * @return The passed-in request
      */
-    public Request add(Request request) {
+    public <T> Request<T> add(Request<T> request) {
         // Tag the request as belonging to this queue and add it to the set of current requests.
         request.setRequestQueue(this);
         synchronized (mCurrentRequests) {
@@ -236,9 +235,9 @@ public class RequestQueue {
             String cacheKey = request.getCacheKey();
             if (mWaitingRequests.containsKey(cacheKey)) {
                 // There is already a request in flight. Queue up.
-                Queue<Request> stagedRequests = mWaitingRequests.get(cacheKey);
+                Queue<Request<?>> stagedRequests = mWaitingRequests.get(cacheKey);
                 if (stagedRequests == null) {
-                    stagedRequests = new LinkedList<Request>();
+                    stagedRequests = new LinkedList<Request<?>>();
                 }
                 stagedRequests.add(request);
                 mWaitingRequests.put(cacheKey, stagedRequests);
@@ -262,7 +261,7 @@ public class RequestQueue {
      * <p>Releases waiting requests for <code>request.getCacheKey()</code> if
      *      <code>request.shouldCache()</code>.</p>
      */
-    void finish(Request request) {
+    void finish(Request<?> request) {
         // Remove from the set of requests currently being processed.
         synchronized (mCurrentRequests) {
             mCurrentRequests.remove(request);
@@ -271,7 +270,7 @@ public class RequestQueue {
         if (request.shouldCache()) {
             synchronized (mWaitingRequests) {
                 String cacheKey = request.getCacheKey();
-                Queue<Request> waitingRequests = mWaitingRequests.remove(cacheKey);
+                Queue<Request<?>> waitingRequests = mWaitingRequests.remove(cacheKey);
                 if (waitingRequests != null) {
                     if (VolleyLog.DEBUG) {
                         VolleyLog.v("Releasing %d waiting requests for cacheKey=%s.",
