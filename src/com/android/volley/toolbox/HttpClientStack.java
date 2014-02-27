@@ -166,15 +166,21 @@ public class HttpClientStack implements HttpStack {
      */
     public static final class HttpPatch extends HttpEntityEnclosingRequestBase {
 
-        public final static String METHOD_NAME = "PATCH";
+        // HTTPUrlConnection does not support PATCH.
+        // make POST request and override http method in header
+
+        public final static String METHOD_NAME = "POST";
+        public final static String METHOD_OVERRIDE = "PATCH";
 
         public HttpPatch() {
             super();
+            addHeader(HEADER_X_HTTP_METHOD_OVERRIDE, METHOD_OVERRIDE);
         }
 
         public HttpPatch(final URI uri) {
             super();
             setURI(uri);
+            addHeader(HEADER_X_HTTP_METHOD_OVERRIDE, METHOD_OVERRIDE);
         }
 
         /**

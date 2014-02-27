@@ -28,6 +28,9 @@ import java.util.Map;
  * An HTTP stack abstraction.
  */
 public interface HttpStack {
+
+    String HEADER_X_HTTP_METHOD_OVERRIDE = "X-HTTP-Method-Override";
+
     /**
      * Performs an HTTP request with the given parameters.
      *
