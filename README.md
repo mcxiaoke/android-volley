@@ -13,7 +13,7 @@ Maven and Gradle support is already added.
 
 Current Version:
 
-    1.0.1 (updated at 2014.02.13)
+    1.0.2 (updated at 2014.02.28)
 
 ###Mirror
 
@@ -34,18 +34,6 @@ format: jar
 </dependency>
 ```
 
-format: aar
-
-```
-<dependency>
-    <groupId>com.mcxiaoke.volley</groupId>
-    <artifactId>library-aar</artifactId>
-    <version>1.0.0</version>
-    <type>aar</type>
-</dependency>
-```
-
-
 
 ###Gradle
 
@@ -59,7 +47,7 @@ compile 'com.mcxiaoke.volley:library:1.0.+'
 format: aar
 
 ```
-compile 'com.mcxiaoke.volley:library-aar:1.0.+'
+compile 'com.mcxiaoke.volley:library:1.0.+@aar'
 ```
 
 
