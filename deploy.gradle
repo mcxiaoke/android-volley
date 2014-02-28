@@ -1,0 +1,62 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.8.+'
+    }
+}
+
+apply plugin: 'android-library'
+
+allprojects {
+    group project.GROUP
+    version project.VERSION_NAME
+
+    repositories {
+        mavenCentral()
+    }
+
+    tasks.withType(Compile) {
+        options.encoding = 'UTF-8'
+    }
+}
+
+
+android {
+    compileSdkVersion Integer.parseInt(project.ANDROID_BUILD_SDK_VERSION)
+    buildToolsVersion project.ANDROID_BUILD_TOOLS_VERSION
+
+    defaultConfig {
+        minSdkVersion 8
+        targetSdkVersion Integer.parseInt(project.ANDROID_BUILD_TARGET_SDK_VERSION)
+    }
+
+    sourceSets {
+        defaultConfig {
+            testPackageName 'com.android.volley.tests'
+        }
+
+        main {
+            assets.srcDirs = ['assets']
+            res.srcDirs = ['res']
+            aidl.srcDirs = ['src']
+            resources.srcDirs = ['src']
+            renderscript.srcDirs = ['src']
+            java.srcDirs = ['src']
+            manifest.srcFile 'AndroidManifest.xml'
+
+        }
+
+        instrumentTest.setRoot('tests')
+        instrumentTest.java.srcDirs = ['tests/src']
+    }
+
+    //lintOptions {
+     //   quiet true
+     //   abortOnError false
+    //}
+}
+
+apply from: 'https://raw.github.com/mcxiaoke/gradle-mvn-push/master/jar.gradle'
+apply from: 'https://raw.github.com/mcxiaoke/gradle-mvn-push/master/gradle-mvn-push.gradle'

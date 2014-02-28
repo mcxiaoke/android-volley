@@ -9,28 +9,9 @@ buildscript {
 
 apply plugin: 'android-library'
 
-allprojects {
-    group project.GROUP
-    version project.VERSION_NAME
-
-    repositories {
-        mavenCentral()
-    }
-
-    tasks.withType(Compile) {
-        options.encoding = 'UTF-8'
-    }
-}
-
-
 android {
-    compileSdkVersion Integer.parseInt(project.ANDROID_BUILD_SDK_VERSION)
-    buildToolsVersion project.ANDROID_BUILD_TOOLS_VERSION
-
-    defaultConfig {
-        minSdkVersion 8
-        targetSdkVersion Integer.parseInt(project.ANDROID_BUILD_TARGET_SDK_VERSION)
-    }
+    compileSdkVersion 19
+    buildToolsVersion = 19
 
     sourceSets {
         defaultConfig {
@@ -38,12 +19,12 @@ android {
         }
 
         main {
-            assets.srcDirs = ['assets']
-            res.srcDirs = ['res']
-            aidl.srcDirs = ['src']
-            resources.srcDirs = ['src']
+            assets.srcDirs       = ['assets']
+            res.srcDirs          = ['res']
+            aidl.srcDirs         = ['src']
+            resources.srcDirs    = ['src']
             renderscript.srcDirs = ['src']
-            java.srcDirs = ['src']
+            java.srcDirs         = ['src']
             manifest.srcFile 'AndroidManifest.xml'
 
         }
@@ -51,11 +32,4 @@ android {
         instrumentTest.setRoot('tests')
         instrumentTest.java.srcDirs = ['tests/src']
     }
-
-    //lintOptions {
-     //   quiet true
-     //   abortOnError false
-    //}
 }
-
-apply from: 'https://raw.github.com/mcxiaoke/gradle-mvn-push/master/gradle-mvn-push.gradle'
