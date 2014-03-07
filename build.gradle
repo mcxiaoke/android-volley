@@ -1,8 +1,17 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.8.+'
+    }
+}
+
 apply plugin: 'android-library'
 
 android {
-    compileSdkVersion 17
-    buildToolsVersion = 17
+    compileSdkVersion 19
+    buildToolsVersion = 19
 
     sourceSets {
         defaultConfig {
@@ -20,11 +29,7 @@ android {
 
         }
 
-        instrumentTest {
-            assets.srcDirs    = ["tests/assets"]
-            res.srcDirs       = ["tests/res"]
-            resources.srcDirs = ["tests/src"]
-            java.srcDirs      = ["tests/src"]
-        }
+        instrumentTest.setRoot('tests')
+        instrumentTest.java.srcDirs = ['tests/src']
     }
 }
