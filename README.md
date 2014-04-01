@@ -13,7 +13,7 @@ Maven and Gradle support is already added.
 
 Current Version:
 
-    1.0.2 (updated at 2014.02.28)
+    1.0.3 (updated at 2014.04.01)
 
 ###Mirror
 
