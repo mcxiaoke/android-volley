@@ -30,7 +30,7 @@ format: jar
 <dependency>
     <groupId>com.mcxiaoke.volley</groupId>
     <artifactId>library</artifactId>
-    <version>1.0.0</version>
+    <version>{lastest-version}</version>
 </dependency>
 ```
 
