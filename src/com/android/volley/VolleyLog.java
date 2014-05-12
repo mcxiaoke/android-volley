@@ -62,6 +62,10 @@ public class VolleyLog {
     public static void e(Throwable tr, String format, Object... args) {
         Log.e(TAG, buildMessage(format, args), tr);
     }
+    
+    public static void i(String format, Object... args) {
+    	Log.i(TAG, buildMessage(format, args));
+    }
 
     public static void wtf(String format, Object... args) {
         Log.wtf(TAG, buildMessage(format, args));
