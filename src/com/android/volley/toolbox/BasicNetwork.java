@@ -121,7 +121,7 @@ public class BasicNetwork implements Network {
                 long requestLifetime = SystemClock.elapsedRealtime() - requestStart;
                 logSlowRequests(requestLifetime, request, responseContents, statusLine);
 
-                if (statusCode < 200 || statusCode > 299) {
+                if ((statusCode < 200 || statusCode > 299) && statusCode != 403) {
                     throw new IOException();
                 }
                 return new NetworkResponse(statusCode, responseContents, responseHeaders, false);
@@ -141,7 +141,7 @@ public class BasicNetwork implements Network {
                 }
                 if (statusCode == HttpStatus.SC_MOVED_PERMANENTLY || 
                 		statusCode == HttpStatus.SC_MOVED_TEMPORARILY) {
-                	VolleyLog.e("Request at %s has been redirected to %s", request.getOriginUrl(), request.getUrl());
+                	VolleyLog.i("Request at %s has been redirected to %s", request.getOriginUrl(), request.getUrl());
                 } else {
                 	VolleyLog.e("Unexpected response code %d for %s", statusCode, request.getUrl());
                 }
