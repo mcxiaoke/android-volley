@@ -223,8 +223,8 @@ public class HurlStack implements HttpStack {
                 connection.setRequestMethod("TRACE");
                 break;
             case Method.PATCH:
-                addBodyIfExists(connection, request);
                 connection.setRequestMethod("PATCH");
+                addBodyIfExists(connection, request);
                 break;
             default:
                 throw new IllegalStateException("Unknown method type.");
