@@ -1,21 +1,19 @@
-Android Volley Mirror
+Android Volley
 ----------
+This is an unofficial mirror for android volley library.
 
 ##Intro
 
-This is a mirror for android volley repo with maven and gradle support.
+Volley is already deployed to Maven Central:
 
-Volley is already deployed to Maven Central at 2014.01.03:
+[Volley in Maven Central](http://search.maven.org/#search|ga|1|com.mcxiaoke.volley)
 
-[search: volley](http://search.maven.org/#search|ga|1|com.mcxiaoke.volley)
-
-Maven and Gradle support is already added.
 
 Current Version:
 
-    1.0.5 (updated at 2014.06.18)
+    1.0.6 (2014.07.03)
 
-##Mirror
+##Original
 
 original :  [android-volley](https://android.googlesource.com/platform/frameworks/volley)
     
@@ -30,7 +28,7 @@ format: jar
 <dependency>
     <groupId>com.mcxiaoke.volley</groupId>
     <artifactId>library</artifactId>
-    <version>{lastest-version}</version>
+    <version>1.0.6</version>
 </dependency>
 ```
 
@@ -40,14 +38,14 @@ format: jar
 format: jar
 
 ```
-compile 'com.mcxiaoke.volley:library:1.0.+'
+compile 'com.mcxiaoke.volley:library:1.0.6'
 ```
 
 
 format: aar
 
 ```
-compile 'com.mcxiaoke.volley:library:1.0.+@aar'
+compile 'com.mcxiaoke.volley:library:1.0.6@aar'
 ```
 
 
