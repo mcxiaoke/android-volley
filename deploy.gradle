@@ -34,7 +34,7 @@ android {
 
     sourceSets {
         defaultConfig {
-            testPackageName 'com.android.volley.tests'
+            testApplicationId 'com.android.volley.tests'
         }
 
         main {
@@ -48,8 +48,8 @@ android {
 
         }
 
-        instrumentTest.setRoot('tests')
-        instrumentTest.java.srcDirs = ['tests/src']
+        androidTest.setRoot('tests')
+        androidTest.java.srcDirs = ['tests/src']
     }
 
     //lintOptions {
