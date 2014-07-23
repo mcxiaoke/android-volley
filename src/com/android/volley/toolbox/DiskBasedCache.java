@@ -120,6 +120,10 @@ public class DiskBasedCache implements Cache {
             VolleyLog.d("%s: %s", file.getAbsolutePath(), e.toString());
             remove(key);
             return null;
+        } catch (NegativeArraySizeException e) {
+            VolleyLog.d("%s: %s", file.getAbsolutePath(), e.toString());
+            remove(key);
+            return null;
         } finally {
             if (cis != null) {
                 try {
