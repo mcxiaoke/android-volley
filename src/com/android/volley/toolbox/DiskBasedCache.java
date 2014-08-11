@@ -21,6 +21,7 @@ import android.os.SystemClock;
 import com.android.volley.Cache;
 import com.android.volley.VolleyLog;
 
+import java.io.BufferedInputStream;
 import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
@@ -149,9 +150,9 @@ public class DiskBasedCache implements Cache {
             return;
         }
         for (File file : files) {
-            FileInputStream fis = null;
+            BufferedInputStream fis = null;
             try {
-                fis = new FileInputStream(file);
+                fis = new BufferedInputStream(new FileInputStream(file));
                 CacheHeader entry = CacheHeader.readHeader(fis);
                 entry.size = file.length();
                 putEntry(entry.key, entry);
