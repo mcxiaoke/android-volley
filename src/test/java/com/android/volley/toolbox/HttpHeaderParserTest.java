@@ -40,6 +40,7 @@ public class HttpHeaderParserTest {
 
     private static long ONE_MINUTE_MILLIS = 1000L * 60;
     private static long ONE_HOUR_MILLIS = 1000L * 60 * 60;
+    private static long ONE_DAY_MILLIS = ONE_HOUR_MILLIS * 24;
 
     private NetworkResponse response;
     private Map<String, String> headers;
@@ -55,6 +56,7 @@ public class HttpHeaderParserTest {
         assertNotNull(entry);
         assertNull(entry.etag);
         assertEquals(0, entry.serverDate);
+        assertEquals(0, entry.lastModified);
         assertEquals(0, entry.ttl);
         assertEquals(0, entry.softTtl);
     }
@@ -82,6 +84,7 @@ public class HttpHeaderParserTest {
     @Test public void parseCacheHeaders_normalExpire() {
         long now = System.currentTimeMillis();
         headers.put("Date", rfc1123Date(now));
+        headers.put("Last-Modified", rfc1123Date(now - ONE_DAY_MILLIS));
         headers.put("Expires", rfc1123Date(now + ONE_HOUR_MILLIS));
 
         Cache.Entry entry = HttpHeaderParser.parseCacheHeaders(response);
@@ -89,6 +92,7 @@ public class HttpHeaderParserTest {
         assertNotNull(entry);
         assertNull(entry.etag);
         assertEqualsWithin(entry.serverDate, now, ONE_MINUTE_MILLIS);
+        assertEqualsWithin(entry.lastModified, (now - ONE_DAY_MILLIS), ONE_MINUTE_MILLIS);
         assertTrue(entry.softTtl >= (now + ONE_HOUR_MILLIS));
         assertTrue(entry.ttl == entry.softTtl);
     }
