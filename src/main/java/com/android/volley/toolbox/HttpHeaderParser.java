@@ -45,7 +45,9 @@ public class HttpHeaderParser {
         long lastModified = 0;
         long serverExpires = 0;
         long softExpire = 0;
+        long finalExpire = 0;
         long maxAge = 0;
+        long staleWhileRevalidate = 0;
         boolean hasCacheControl = false;
 
         String serverEtag = null;
@@ -67,6 +69,11 @@ public class HttpHeaderParser {
                 } else if (token.startsWith("max-age=")) {
                     try {
                         maxAge = Long.parseLong(token.substring(8));
+                    } catch (Exception e) {
+                    }
+                } else if (token.startsWith("stale-while-revalidate=")) {
+                    try {
+                        staleWhileRevalidate = Long.parseLong(token.substring(23));
                     } catch (Exception e) {
                     }
                 } else if (token.equals("must-revalidate") || token.equals("proxy-revalidate")) {
@@ -91,16 +98,18 @@ public class HttpHeaderParser {
         // is more restrictive.
         if (hasCacheControl) {
             softExpire = now + maxAge * 1000;
+            finalExpire = softExpire + staleWhileRevalidate * 1000;
         } else if (serverDate > 0 && serverExpires >= serverDate) {
             // Default semantic for Expire header in HTTP specification is softExpire.
             softExpire = now + (serverExpires - serverDate);
+            finalExpire = softExpire;
         }
 
         Cache.Entry entry = new Cache.Entry();
         entry.data = response.data;
         entry.etag = serverEtag;
         entry.softTtl = softExpire;
-        entry.ttl = entry.softTtl;
+        entry.ttl = finalExpire;
         entry.serverDate = serverDate;
         entry.lastModified = lastModified;
         entry.responseHeaders = headers;
