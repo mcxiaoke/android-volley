@@ -44,9 +44,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * A network performing Volley requests over an {@link HttpStack}.
@@ -86,7 +88,7 @@ public class BasicNetwork implements Network {
         while (true) {
             HttpResponse httpResponse = null;
             byte[] responseContents = null;
-            Map<String, String> responseHeaders = new HashMap<String, String>();
+            Map<String, String> responseHeaders = Collections.emptyMap();
             try {
                 // Gather headers.
                 Map<String, String> headers = new HashMap<String, String>();
@@ -251,8 +253,8 @@ public class BasicNetwork implements Network {
     /**
      * Converts Headers[] to Map<String, String>.
      */
-    private static Map<String, String> convertHeaders(Header[] headers) {
-        Map<String, String> result = new HashMap<String, String>();
+    protected static Map<String, String> convertHeaders(Header[] headers) {
+        Map<String, String> result = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
         for (int i = 0; i < headers.length; i++) {
             result.put(headers[i].getName(), headers[i].getValue());
         }
