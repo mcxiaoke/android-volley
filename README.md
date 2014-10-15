@@ -38,14 +38,14 @@ format: jar
 format: jar
 
 ```
-compile 'com.mcxiaoke.volley:library:1.0.6'
+compile 'com.mcxiaoke.volley:library:1.0.7'
 ```
 
 
 format: aar
 
 ```
-compile 'com.mcxiaoke.volley:library:1.0.6@aar'
+compile 'com.mcxiaoke.volley:library:1.0.7@aar'
 ```
 
 
