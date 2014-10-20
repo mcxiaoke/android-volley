@@ -427,12 +427,19 @@ public abstract class Request<T> implements Comparable<Request<T>> {
         return DEFAULT_PARAMS_ENCODING;
     }
 
+    /**
+     * Returns the content type of the POST or PUT body.
+     */
     public String getBodyContentType() {
         return "application/x-www-form-urlencoded; charset=" + getParamsEncoding();
     }
 
     /**
      * Returns the raw POST or PUT body to be sent.
+     *
+     * <p>By default, the body consists of the request parameters in
+     * application/x-www-form-urlencoded format. When overriding this method, consider overriding
+     * {@link #getBodyContentType()} as well to match the new body format.
      *
      * @throws AuthFailureError in the event of auth failure
      */
