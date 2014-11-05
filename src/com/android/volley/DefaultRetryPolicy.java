@@ -29,7 +29,7 @@ public class DefaultRetryPolicy implements RetryPolicy {
     /** The maximum number of attempts. */
     private final int mMaxNumRetries;
 
-    /** The backoff multiplier for for the policy. */
+    /** The backoff multiplier for the policy. */
     private final float mBackoffMultiplier;
 
     /** The default socket timeout in milliseconds */
@@ -74,6 +74,13 @@ public class DefaultRetryPolicy implements RetryPolicy {
     @Override
     public int getCurrentRetryCount() {
         return mCurrentRetryCount;
+    }
+
+    /**
+     * Returns the backoff multiplier for the policy.
+     */
+    public float getBackoffMultiplier() {
+        return mBackoffMultiplier;
     }
 
     /**
