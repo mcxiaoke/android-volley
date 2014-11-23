@@ -3,7 +3,7 @@ apply plugin: 'android-library'
 android {
     sourceSets {
         defaultConfig {
-            testPackageName 'com.android.volley.tests'
+            testApplicationId 'com.android.volley.tests'
         }
 
         main {
