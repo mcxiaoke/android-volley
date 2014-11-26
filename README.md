@@ -11,7 +11,7 @@ Volley is already deployed to Maven Central:
 
 Current Version:
 
-    1.0.8 (2014.11.07)
+    1.0.9 (2014.11.25)
 
 ##Original
 

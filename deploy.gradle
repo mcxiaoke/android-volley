@@ -3,11 +3,11 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.11.+'
+        classpath 'com.android.tools.build:gradle:0.14.+'
     }
 }
 
-apply plugin: 'android-library'
+apply plugin: 'com.android.library'
 
 allprojects {
     group project.GROUP
@@ -17,7 +17,7 @@ allprojects {
         mavenCentral()
     }
 
-    tasks.withType(Compile) {
+    tasks.withType(JavaCompile) {
         options.encoding = 'UTF-8'
     }
 }
