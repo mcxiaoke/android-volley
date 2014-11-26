@@ -11,7 +11,7 @@ Volley is already deployed to Maven Central:
 
 Current Version:
 
-    1.0.8 (2014.11.07)
+    1.0.9 (2014.11.25)
 
 ##Original
 
@@ -28,7 +28,7 @@ format: jar
 <dependency>
     <groupId>com.mcxiaoke.volley</groupId>
     <artifactId>library</artifactId>
-    <version>1.0.7</version>
+    <version>{latest-version}</version>
 </dependency>
 ```
 
@@ -38,14 +38,14 @@ format: jar
 format: jar
 
 ```
-compile 'com.mcxiaoke.volley:library:1.0.7'
+compile 'com.mcxiaoke.volley:library:1.0.+'
 ```
 
 
 format: aar
 
 ```
-compile 'com.mcxiaoke.volley:library:1.0.7@aar'
+compile 'com.mcxiaoke.volley:library:1.0.+@aar'
 ```
 
 
