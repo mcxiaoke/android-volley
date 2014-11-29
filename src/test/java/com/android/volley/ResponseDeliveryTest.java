@@ -16,25 +16,26 @@
 
 package com.android.volley;
 
-import android.test.suitebuilder.annotation.MediumTest;
-
 import com.android.volley.mock.MockRequest;
 import com.android.volley.utils.CacheTestUtils;
 import com.android.volley.utils.ImmediateResponseDelivery;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
 
-@MediumTest
-public class ResponseDeliveryTest extends TestCase {
+import static org.junit.Assert.*;
+
+@RunWith(RobolectricTestRunner.class)
+public class ResponseDeliveryTest {
 
     private ExecutorDelivery mDelivery;
     private MockRequest mRequest;
     private Response<byte[]> mSuccessResponse;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-
+    @Before public void setUp() throws Exception {
         // Make the delivery just run its posted responses immediately.
         mDelivery = new ImmediateResponseDelivery();
         mRequest = new MockRequest();
@@ -44,20 +45,20 @@ public class ResponseDeliveryTest extends TestCase {
         mSuccessResponse = Response.success(data, cacheEntry);
     }
 
-    public void testPostResponse_callsDeliverResponse() {
+    @Test public void postResponseCallsDeliverResponse() {
         mDelivery.postResponse(mRequest, mSuccessResponse);
         assertTrue(mRequest.deliverResponse_called);
         assertFalse(mRequest.deliverError_called);
     }
 
-    public void testPostResponse_suppressesCanceled() {
+    @Test public void postResponseSuppressesCanceled() {
         mRequest.cancel();
         mDelivery.postResponse(mRequest, mSuccessResponse);
         assertFalse(mRequest.deliverResponse_called);
         assertFalse(mRequest.deliverError_called);
     }
 
-    public void testPostError_callsDeliverError() {
+    @Test public void postErrorCallsDeliverError() {
         Response<byte[]> errorResponse = Response.error(new ServerError());
 
         mDelivery.postResponse(mRequest, errorResponse);

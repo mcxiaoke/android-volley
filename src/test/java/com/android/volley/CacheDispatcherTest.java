@@ -16,19 +16,23 @@
 
 package com.android.volley;
 
-import android.test.suitebuilder.annotation.MediumTest;
-
 import com.android.volley.mock.MockCache;
 import com.android.volley.mock.MockRequest;
 import com.android.volley.mock.MockResponseDelivery;
 import com.android.volley.mock.WaitableQueue;
 import com.android.volley.utils.CacheTestUtils;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
 
-@MediumTest
+import static org.junit.Assert.*;
+
+@RunWith(RobolectricTestRunner.class)
 @SuppressWarnings("rawtypes")
-public class CacheDispatcherTest extends TestCase {
+public class CacheDispatcherTest {
     private CacheDispatcher mDispatcher;
     private WaitableQueue mCacheQueue;
     private WaitableQueue mNetworkQueue;
@@ -38,10 +42,7 @@ public class CacheDispatcherTest extends TestCase {
 
     private static final long TIMEOUT_MILLIS = 5000;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-
+    @Before public void setUp() throws Exception {
         mCacheQueue = new WaitableQueue();
         mNetworkQueue = new WaitableQueue();
         mCache = new MockCache();
@@ -53,15 +54,13 @@ public class CacheDispatcherTest extends TestCase {
         mDispatcher.start();
     }
 
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
+    @After public void tearDown() throws Exception {
         mDispatcher.quit();
         mDispatcher.join();
     }
 
     // A cancelled request should not be processed at all.
-    public void testCancelledRequest() throws Exception {
+    @Test public void cancelledRequest() throws Exception {
         mRequest.cancel();
         mCacheQueue.add(mRequest);
         mCacheQueue.waitUntilEmpty(TIMEOUT_MILLIS);
@@ -70,7 +69,7 @@ public class CacheDispatcherTest extends TestCase {
     }
 
     // A cache miss does not post a response and puts the request on the network queue.
-    public void testCacheMiss() throws Exception {
+    @Test public void cacheMiss() throws Exception {
         mCacheQueue.add(mRequest);
         mCacheQueue.waitUntilEmpty(TIMEOUT_MILLIS);
         assertFalse(mDelivery.wasEitherResponseCalled());
@@ -80,7 +79,7 @@ public class CacheDispatcherTest extends TestCase {
     }
 
     // A non-expired cache hit posts a response and does not queue to the network.
-    public void testNonExpiredCacheHit() throws Exception {
+    @Test public void nonExpiredCacheHit() throws Exception {
         Cache.Entry entry = CacheTestUtils.makeRandomCacheEntry(null, false, false);
         mCache.setEntryToReturn(entry);
         mCacheQueue.add(mRequest);
@@ -90,7 +89,7 @@ public class CacheDispatcherTest extends TestCase {
     }
 
     // A soft-expired cache hit posts a response and queues to the network.
-    public void testSoftExpiredCacheHit() throws Exception {
+    @Test public void softExpiredCacheHit() throws Exception {
         Cache.Entry entry = CacheTestUtils.makeRandomCacheEntry(null, false, true);
         mCache.setEntryToReturn(entry);
         mCacheQueue.add(mRequest);
@@ -103,7 +102,7 @@ public class CacheDispatcherTest extends TestCase {
     }
 
     // An expired cache hit does not post a response and queues to the network.
-    public void testExpiredCacheHit() throws Exception {
+    @Test public void expiredCacheHit() throws Exception {
         Cache.Entry entry = CacheTestUtils.makeRandomCacheEntry(null, true, true);
         mCache.setEntryToReturn(entry);
         mCacheQueue.add(mRequest);

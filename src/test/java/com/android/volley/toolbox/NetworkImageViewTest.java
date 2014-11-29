@@ -1,20 +1,26 @@
 package com.android.volley.toolbox;
 
-import android.test.InstrumentationTestCase;
 import android.view.ViewGroup.LayoutParams;
 
-public class NetworkImageViewTest extends InstrumentationTestCase {
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
+import org.robolectric.RobolectricTestRunner;
+
+import static org.junit.Assert.*;
+
+@RunWith(RobolectricTestRunner.class)
+public class NetworkImageViewTest {
     private NetworkImageView mNIV;
     private MockImageLoader mMockImageLoader;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before public void setUp() throws Exception {
         mMockImageLoader = new MockImageLoader();
-        mNIV = new NetworkImageView(getInstrumentation().getContext());
+        mNIV = new NetworkImageView(Robolectric.application);
     }
 
-    public void testSetImageUrl_requestsImage() {
+    @Test public void setImageUrl_requestsImage() {
         mNIV.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
         mNIV.setImageUrl("http://foo", mMockImageLoader);
         assertEquals("http://foo", mMockImageLoader.lastRequestUrl);
