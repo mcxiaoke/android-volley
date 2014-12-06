@@ -20,22 +20,23 @@ import com.android.volley.Request.Method;
 import com.android.volley.mock.MockHttpURLConnection;
 import com.android.volley.mock.TestRequest;
 
-import android.test.AndroidTestCase;
-import android.test.suitebuilder.annotation.SmallTest;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
 
-@SmallTest
-public class HurlStackTest extends AndroidTestCase {
+import static org.junit.Assert.*;
+
+@RunWith(RobolectricTestRunner.class)
+public class HurlStackTest {
 
     private MockHttpURLConnection mMockConnection;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        mContext = getContext();
+    @Before public void setUp() throws Exception {
         mMockConnection = new MockHttpURLConnection();
     }
 
-    public void testConnectionForDeprecatedGetRequest() throws Exception {
+    @Test public void connectionForDeprecatedGetRequest() throws Exception {
         TestRequest.DeprecatedGet request = new TestRequest.DeprecatedGet();
         assertEquals(request.getMethod(), Method.DEPRECATED_GET_OR_POST);
 
@@ -44,7 +45,7 @@ public class HurlStackTest extends AndroidTestCase {
         assertFalse(mMockConnection.getDoOutput());
     }
 
-    public void testConnectionForDeprecatedPostRequest() throws Exception {
+    @Test public void connectionForDeprecatedPostRequest() throws Exception {
         TestRequest.DeprecatedPost request = new TestRequest.DeprecatedPost();
         assertEquals(request.getMethod(), Method.DEPRECATED_GET_OR_POST);
 
@@ -53,7 +54,7 @@ public class HurlStackTest extends AndroidTestCase {
         assertTrue(mMockConnection.getDoOutput());
     }
 
-    public void testConnectionForGetRequest() throws Exception {
+    @Test public void connectionForGetRequest() throws Exception {
         TestRequest.Get request = new TestRequest.Get();
         assertEquals(request.getMethod(), Method.GET);
 
@@ -62,7 +63,7 @@ public class HurlStackTest extends AndroidTestCase {
         assertFalse(mMockConnection.getDoOutput());
     }
 
-    public void testConnectionForPostRequest() throws Exception {
+    @Test public void connectionForPostRequest() throws Exception {
         TestRequest.Post request = new TestRequest.Post();
         assertEquals(request.getMethod(), Method.POST);
 
@@ -71,7 +72,7 @@ public class HurlStackTest extends AndroidTestCase {
         assertFalse(mMockConnection.getDoOutput());
     }
 
-    public void testConnectionForPostWithBodyRequest() throws Exception {
+    @Test public void connectionForPostWithBodyRequest() throws Exception {
         TestRequest.PostWithBody request = new TestRequest.PostWithBody();
         assertEquals(request.getMethod(), Method.POST);
 
@@ -80,7 +81,7 @@ public class HurlStackTest extends AndroidTestCase {
         assertTrue(mMockConnection.getDoOutput());
     }
 
-    public void testConnectionForPutRequest() throws Exception {
+    @Test public void connectionForPutRequest() throws Exception {
         TestRequest.Put request = new TestRequest.Put();
         assertEquals(request.getMethod(), Method.PUT);
 
@@ -89,7 +90,7 @@ public class HurlStackTest extends AndroidTestCase {
         assertFalse(mMockConnection.getDoOutput());
     }
 
-    public void testConnectionForPutWithBodyRequest() throws Exception {
+    @Test public void connectionForPutWithBodyRequest() throws Exception {
         TestRequest.PutWithBody request = new TestRequest.PutWithBody();
         assertEquals(request.getMethod(), Method.PUT);
 
@@ -98,7 +99,7 @@ public class HurlStackTest extends AndroidTestCase {
         assertTrue(mMockConnection.getDoOutput());
     }
 
-    public void testConnectionForDeleteRequest() throws Exception {
+    @Test public void connectionForDeleteRequest() throws Exception {
         TestRequest.Delete request = new TestRequest.Delete();
         assertEquals(request.getMethod(), Method.DELETE);
 
@@ -107,7 +108,7 @@ public class HurlStackTest extends AndroidTestCase {
         assertFalse(mMockConnection.getDoOutput());
     }
 
-    public void testConnectionForHeadRequest() throws Exception {
+    @Test public void connectionForHeadRequest() throws Exception {
         TestRequest.Head request = new TestRequest.Head();
         assertEquals(request.getMethod(), Method.HEAD);
 
@@ -116,7 +117,7 @@ public class HurlStackTest extends AndroidTestCase {
         assertFalse(mMockConnection.getDoOutput());
     }
 
-    public void testConnectionForOptionsRequest() throws Exception {
+    @Test public void connectionForOptionsRequest() throws Exception {
         TestRequest.Options request = new TestRequest.Options();
         assertEquals(request.getMethod(), Method.OPTIONS);
 
@@ -125,7 +126,7 @@ public class HurlStackTest extends AndroidTestCase {
         assertFalse(mMockConnection.getDoOutput());
     }
 
-    public void testConnectionForTraceRequest() throws Exception {
+    @Test public void connectionForTraceRequest() throws Exception {
         TestRequest.Trace request = new TestRequest.Trace();
         assertEquals(request.getMethod(), Method.TRACE);
 
@@ -134,7 +135,7 @@ public class HurlStackTest extends AndroidTestCase {
         assertFalse(mMockConnection.getDoOutput());
     }
 
-    public void testConnectionForPatchRequest() throws Exception {
+    @Test public void connectionForPatchRequest() throws Exception {
         TestRequest.Patch request = new TestRequest.Patch();
         assertEquals(request.getMethod(), Method.PATCH);
 
@@ -143,7 +144,7 @@ public class HurlStackTest extends AndroidTestCase {
         assertFalse(mMockConnection.getDoOutput());
     }
 
-    public void testConnectionForPatchWithBodyRequest() throws Exception {
+    @Test public void connectionForPatchWithBodyRequest() throws Exception {
         TestRequest.PatchWithBody request = new TestRequest.PatchWithBody();
         assertEquals(request.getMethod(), Method.PATCH);
 

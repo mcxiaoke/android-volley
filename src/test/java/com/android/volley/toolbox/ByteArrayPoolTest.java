@@ -16,10 +16,15 @@
 
 package com.android.volley.toolbox;
 
-import android.test.AndroidTestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-public class ByteArrayPoolTest extends AndroidTestCase {
-    public void testReusesBuffer() {
+import static org.junit.Assert.*;
+
+public class ByteArrayPoolTest {
+    @Test public void reusesBuffer() {
         ByteArrayPool pool = new ByteArrayPool(32);
 
         byte[] buf1 = pool.getBuf(16);
@@ -35,7 +40,7 @@ public class ByteArrayPoolTest extends AndroidTestCase {
         assertTrue(buf3 != buf4);
     }
 
-    public void testObeysSizeLimit() {
+    @Test public void obeysSizeLimit() {
         ByteArrayPool pool = new ByteArrayPool(32);
 
         byte[] buf1 = pool.getBuf(16);
@@ -56,7 +61,7 @@ public class ByteArrayPoolTest extends AndroidTestCase {
         assertTrue(buf6 != buf1 && buf6 != buf2 && buf6 != buf3);
     }
 
-    public void testReturnsBufferWithRightSize() {
+    @Test public void returnsBufferWithRightSize() {
         ByteArrayPool pool = new ByteArrayPool(32);
 
         byte[] buf1 = pool.getBuf(16);
