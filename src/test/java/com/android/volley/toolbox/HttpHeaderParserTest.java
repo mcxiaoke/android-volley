@@ -16,15 +16,15 @@
 
 package com.android.volley.toolbox;
 
-import android.test.suitebuilder.annotation.SmallTest;
-
 import com.android.volley.Cache;
 import com.android.volley.NetworkResponse;
 
-import junit.framework.TestCase;
-
 import org.apache.http.Header;
 import org.apache.http.message.BasicHeader;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -33,8 +33,10 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-@SmallTest
-public class HttpHeaderParserTest extends TestCase {
+import static org.junit.Assert.*;
+
+@RunWith(RobolectricTestRunner.class)
+public class HttpHeaderParserTest {
 
     private static long ONE_MINUTE_MILLIS = 1000L * 60;
     private static long ONE_HOUR_MILLIS = 1000L * 60 * 60;
@@ -42,14 +44,12 @@ public class HttpHeaderParserTest extends TestCase {
     private NetworkResponse response;
     private Map<String, String> headers;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before public void setUp() throws Exception {
         headers = new HashMap<String, String>();
         response = new NetworkResponse(0, null, headers, false);
     }
 
-    public void testParseCacheHeaders_noHeaders() {
+    @Test public void parseCacheHeaders_noHeaders() {
         Cache.Entry entry = HttpHeaderParser.parseCacheHeaders(response);
 
         assertNotNull(entry);
@@ -59,7 +59,7 @@ public class HttpHeaderParserTest extends TestCase {
         assertEquals(0, entry.softTtl);
     }
 
-    public void testParseCacheHeaders_headersSet() {
+    @Test public void parseCacheHeaders_headersSet() {
         headers.put("MyCustomHeader", "42");
 
         Cache.Entry entry = HttpHeaderParser.parseCacheHeaders(response);
@@ -70,7 +70,7 @@ public class HttpHeaderParserTest extends TestCase {
         assertEquals("42", entry.responseHeaders.get("MyCustomHeader"));
     }
 
-    public void testParseCacheHeaders_etag() {
+    @Test public void parseCacheHeaders_etag() {
         headers.put("ETag", "Yow!");
 
         Cache.Entry entry = HttpHeaderParser.parseCacheHeaders(response);
@@ -79,7 +79,7 @@ public class HttpHeaderParserTest extends TestCase {
         assertEquals("Yow!", entry.etag);
     }
 
-    public void testParseCacheHeaders_normalExpire() {
+    @Test public void parseCacheHeaders_normalExpire() {
         long now = System.currentTimeMillis();
         headers.put("Date", rfc1123Date(now));
         headers.put("Expires", rfc1123Date(now + ONE_HOUR_MILLIS));
@@ -93,7 +93,7 @@ public class HttpHeaderParserTest extends TestCase {
         assertTrue(entry.ttl == entry.softTtl);
     }
 
-    public void testParseCacheHeaders_expiresInPast() {
+    @Test public void parseCacheHeaders_expiresInPast() {
         long now = System.currentTimeMillis();
         headers.put("Date", rfc1123Date(now));
         headers.put("Expires", rfc1123Date(now - ONE_HOUR_MILLIS));
@@ -107,7 +107,7 @@ public class HttpHeaderParserTest extends TestCase {
         assertEquals(0, entry.softTtl);
     }
 
-    public void testParseCacheHeaders_serverRelative() {
+    @Test public void parseCacheHeaders_serverRelative() {
 
         long now = System.currentTimeMillis();
         // Set "current" date as one hour in the future
@@ -121,7 +121,7 @@ public class HttpHeaderParserTest extends TestCase {
         assertEquals(entry.softTtl, entry.ttl);
     }
 
-    public void testParseCacheHeaders_cacheControlOverridesExpires() {
+    @Test public void parseCacheHeaders_cacheControlOverridesExpires() {
         long now = System.currentTimeMillis();
         headers.put("Date", rfc1123Date(now));
         headers.put("Expires", rfc1123Date(now + ONE_HOUR_MILLIS));
@@ -135,7 +135,7 @@ public class HttpHeaderParserTest extends TestCase {
         assertEquals(entry.softTtl, entry.ttl);
     }
 
-    public void testParseCacheHeaders_cacheControlNoCache() {
+    @Test public void parseCacheHeaders_cacheControlNoCache() {
         long now = System.currentTimeMillis();
         headers.put("Date", rfc1123Date(now));
         headers.put("Expires", rfc1123Date(now + ONE_HOUR_MILLIS));
@@ -146,7 +146,7 @@ public class HttpHeaderParserTest extends TestCase {
         assertNull(entry);
     }
 
-    public void testParseCacheHeaders_cacheControlMustRevalidate() {
+    @Test public void parseCacheHeaders_cacheControlMustRevalidate() {
         long now = System.currentTimeMillis();
         headers.put("Date", rfc1123Date(now));
         headers.put("Expires", rfc1123Date(now + ONE_HOUR_MILLIS));
@@ -172,7 +172,7 @@ public class HttpHeaderParserTest extends TestCase {
 
     // --------------------------
 
-    public void testParseCharset() {
+    @Test public void parseCharset() {
         // Like the ones we usually see
         headers.put("Content-Type", "text/plain; charset=utf-8");
         assertEquals("utf-8", HttpHeaderParser.parseCharset(headers));
@@ -202,7 +202,7 @@ public class HttpHeaderParserTest extends TestCase {
         assertEquals("ISO-8859-1", HttpHeaderParser.parseCharset(headers));
     }
 
-    public void testParseCaseInsensitive() {
+    @Test public void parseCaseInsensitive() {
 
         long now = System.currentTimeMillis();
 
