@@ -1,3 +1,11 @@
+// NOTE: The only changes that belong in this file are the definitions
+// of tool versions (gradle plugin, compile SDK, build tools), so that
+// Volley can be built via gradle as a standalone project.
+//
+// Any other changes to the build config belong in rules.gradle, which
+// is used by projects that depend on Volley but define their own
+// tools versions across all dependencies to ensure a consistent build.
+
 buildscript {
     repositories {
         mavenCentral()
@@ -14,3 +22,4 @@ android {
     buildToolsVersion = '21.1.0'
 }
 
+apply from: 'rules.gradle'
