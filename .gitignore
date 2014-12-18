@@ -16,3 +16,6 @@ out
 .gradle
 build
 .settings
+target
+*.iml
+.idea
