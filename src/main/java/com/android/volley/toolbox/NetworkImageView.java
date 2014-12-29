@@ -79,6 +79,16 @@ public class NetworkImageView extends ImageView {
         // The URL has potentially changed. See if we need to load it.
         loadImageIfNecessary(false);
     }
+    
+    /**
+     * Gets the URL of the image that should be loaded into this view, or null if no URL has been set.
+     * The image may or may not already be downloaded and set into the view.
+     * @return the URL of the image to be set into the view, or null.
+     */
+    public String getImageURL()
+    {
+    	return mUrl;
+    }
 
     /**
      * Sets the default image resource ID to be used for this view until the attempt to load it
