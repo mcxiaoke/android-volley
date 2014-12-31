@@ -18,7 +18,6 @@ package com.android.volley.toolbox;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
 
@@ -150,8 +149,6 @@ public class NetworkImageView extends ImageView {
 					// if the request is from the same URL, return.
 					return;
 				} else {
-					Log.d("urls", mImageContainer.getRequestUrl() + " new "
-							+ mUrl);
 					// if there is a pre-existing request, cancel it if it's
 					// fetching a different URL.
 					mImageContainer.cancelRequest();
