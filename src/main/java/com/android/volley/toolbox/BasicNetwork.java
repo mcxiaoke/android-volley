@@ -212,8 +212,8 @@ public class BasicNetwork implements Network {
             headers.put("If-None-Match", entry.etag);
         }
 
-        if (entry.serverDate > 0) {
-            Date refTime = new Date(entry.serverDate);
+        if (entry.lastModified > 0) {
+            Date refTime = new Date(entry.lastModified);
             headers.put("If-Modified-Since", DateUtils.formatDate(refTime));
         }
     }
