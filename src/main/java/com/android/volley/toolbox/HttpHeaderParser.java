@@ -42,6 +42,7 @@ public class HttpHeaderParser {
         Map<String, String> headers = response.headers;
 
         long serverDate = 0;
+        long lastModified = 0;
         long serverExpires = 0;
         long softExpire = 0;
         long maxAge = 0;
@@ -79,6 +80,11 @@ public class HttpHeaderParser {
             serverExpires = parseDateAsEpoch(headerValue);
         }
 
+        headerValue = headers.get("Last-Modified");
+        if (headerValue != null) {
+            lastModified = parseDateAsEpoch(headerValue);
+        }
+
         serverEtag = headers.get("ETag");
 
         // Cache-Control takes precedence over an Expires header, even if both exist and Expires
@@ -96,6 +102,7 @@ public class HttpHeaderParser {
         entry.softTtl = softExpire;
         entry.ttl = entry.softTtl;
         entry.serverDate = serverDate;
+        entry.lastModified = lastModified;
         entry.responseHeaders = headers;
 
         return entry;
