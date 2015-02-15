@@ -139,6 +139,24 @@ public class HttpHeaderParserTest {
         assertEquals(entry.softTtl, entry.ttl);
     }
 
+    @Test public void testParseCacheHeaders_staleWhileRevalidate() {
+        long now = System.currentTimeMillis();
+        headers.put("Date", rfc1123Date(now));
+        headers.put("Expires", rfc1123Date(now + ONE_HOUR_MILLIS));
+
+        // - max-age (entry.softTtl) indicates that the asset is fresh for 1 day
+        // - stale-while-revalidate (entry.ttl) indicates that the asset may
+        // continue to be served stale for up to additional 7 days
+        headers.put("Cache-Control", "max-age=86400, stale-while-revalidate=604800");
+
+        Cache.Entry entry = HttpHeaderParser.parseCacheHeaders(response);
+
+        assertNotNull(entry);
+        assertNull(entry.etag);
+        assertEqualsWithin(now + 24 * ONE_HOUR_MILLIS, entry.softTtl, ONE_MINUTE_MILLIS);
+        assertEqualsWithin(now + 8 * 24 * ONE_HOUR_MILLIS, entry.ttl, ONE_MINUTE_MILLIS);
+    }
+
     @Test public void parseCacheHeaders_cacheControlNoCache() {
         long now = System.currentTimeMillis();
         headers.put("Date", rfc1123Date(now));
