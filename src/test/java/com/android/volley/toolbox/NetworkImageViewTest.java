@@ -1,6 +1,7 @@
 package com.android.volley.toolbox;
 
 import android.view.ViewGroup.LayoutParams;
+import android.widget.ImageView.ScaleType;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -43,7 +44,7 @@ public class NetworkImageViewTest {
         public int lastMaxHeight;
 
         public ImageContainer get(String requestUrl, ImageListener imageListener, int maxWidth,
-                int maxHeight) {
+                int maxHeight, ScaleType scaleType) {
             lastRequestUrl = requestUrl;
             lastMaxWidth = maxWidth;
             lastMaxHeight = maxHeight;
