@@ -168,7 +168,16 @@ public class ImageLoader {
      * @param defaultImage Optional default image to return until the actual image is loaded.
      */
     public ImageContainer get(String requestUrl, final ImageListener listener) {
-        return get(requestUrl, listener, 0, 0, ScaleType.CENTER_INSIDE);
+        return get(requestUrl, listener, 0, 0);
+    }
+
+    /**
+     * Equivalent to calling {@link #get(String, ImageListener, int, int, ScaleType)} with
+     * {@code Scaletype == ScaleType.CENTER_INSIDE}.
+     */
+    public ImageContainer get(String requestUrl, ImageListener imageListener,
+            int maxWidth, int maxHeight) {
+        return get(requestUrl, imageListener, maxWidth, maxHeight, ScaleType.CENTER_INSIDE);
     }
 
     /**
