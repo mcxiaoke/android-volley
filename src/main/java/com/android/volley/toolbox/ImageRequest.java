@@ -81,6 +81,16 @@ public class ImageRequest extends Request<Bitmap> {
         mScaleType = scaleType;
     }
 
+    /**
+     * For API compatibility with the pre-ScaleType variant of the constructor. Equivalent to
+     * the normal constructor with {@code ScaleType.CENTER_INSIDE}.
+     */
+    @Deprecated
+    public ImageRequest(String url, Response.Listener<Bitmap> listener, int maxWidth, int maxHeight,
+            Config decodeConfig, Response.ErrorListener errorListener) {
+        this(url, listener, maxWidth, maxHeight,
+                ScaleType.CENTER_INSIDE, decodeConfig, errorListener);
+    }
     @Override
     public Priority getPriority() {
         return Priority.LOW;
