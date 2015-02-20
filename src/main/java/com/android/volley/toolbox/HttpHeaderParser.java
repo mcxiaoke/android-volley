@@ -131,10 +131,14 @@ public class HttpHeaderParser {
     }
 
     /**
-     * Returns the charset specified in the Content-Type of this header,
-     * or the HTTP default (ISO-8859-1) if none can be found.
+     * Retrieve a charset from headers
+     *
+     * @param headers An {@link java.util.Map} of headers
+     * @param defaultCharset Charset to return if none can be found
+     * @return Returns the charset specified in the Content-Type of this header,
+     * or the defaultCharset if none can be found.
      */
-    public static String parseCharset(Map<String, String> headers) {
+    public static String parseCharset(Map<String, String> headers, String defaultCharset) {
         String contentType = headers.get(HTTP.CONTENT_TYPE);
         if (contentType != null) {
             String[] params = contentType.split(";");
@@ -148,6 +152,14 @@ public class HttpHeaderParser {
             }
         }
 
-        return HTTP.DEFAULT_CONTENT_CHARSET;
+        return defaultCharset;
+    }
+
+    /**
+     * Returns the charset specified in the Content-Type of this header,
+     * or the HTTP default (ISO-8859-1) if none can be found.
+     */
+    public static String parseCharset(Map<String, String> headers) {
+        return parseCharset(headers, HTTP.DEFAULT_CONTENT_CHARSET);
     }
 }
