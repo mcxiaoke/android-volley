@@ -199,6 +199,10 @@ public class HttpHeaderParserTest {
         headers.put("Content-Type", "text/plain; charset=utf-8");
         assertEquals("utf-8", HttpHeaderParser.parseCharset(headers));
 
+        // Charset specified, ignore default charset
+        headers.put("Content-Type", "text/plain; charset=utf-8");
+        assertEquals("utf-8", HttpHeaderParser.parseCharset(headers, "ISO-8859-1"));
+
         // Extra whitespace
         headers.put("Content-Type", "text/plain;    charset=utf-8 ");
         assertEquals("utf-8", HttpHeaderParser.parseCharset(headers));
@@ -211,6 +215,10 @@ public class HttpHeaderParserTest {
         headers.clear();
         assertEquals("ISO-8859-1", HttpHeaderParser.parseCharset(headers));
 
+        // No Content-Type header, use default charset
+        headers.clear();
+        assertEquals("utf-8", HttpHeaderParser.parseCharset(headers, "utf-8"));
+
         // Empty value
         headers.put("Content-Type", "text/plain; charset=");
         assertEquals("ISO-8859-1", HttpHeaderParser.parseCharset(headers));
@@ -218,6 +226,10 @@ public class HttpHeaderParserTest {
         // None specified
         headers.put("Content-Type", "text/plain");
         assertEquals("ISO-8859-1", HttpHeaderParser.parseCharset(headers));
+
+        // None charset specified, use default charset
+        headers.put("Content-Type", "application/json");
+        assertEquals("utf-8", HttpHeaderParser.parseCharset(headers, "utf-8"));
 
         // None specified, extra semicolon
         headers.put("Content-Type", "text/plain;");
