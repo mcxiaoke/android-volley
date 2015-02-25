@@ -1,8 +1,11 @@
 package com.android.volley.toolbox;
 
+import android.content.Context;
+import android.util.AttributeSet;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView.ScaleType;
 
+import com.android.volley.Cache;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,5 +53,18 @@ public class NetworkImageViewTest {
             lastMaxHeight = maxHeight;
             return null;
         }
+    }
+
+    @Test
+    public void publicMethods() throws Exception {
+        // Catch-all test to find API-breaking changes.
+        assertNotNull(NetworkImageView.class.getConstructor(Context.class));
+        assertNotNull(NetworkImageView.class.getConstructor(Context.class, AttributeSet.class));
+        assertNotNull(NetworkImageView.class.getConstructor(Context.class, AttributeSet.class,
+                int.class));
+
+        assertNotNull(NetworkImageView.class.getMethod("setImageUrl", String.class, ImageLoader.class));
+        assertNotNull(NetworkImageView.class.getMethod("setDefaultImageResId", int.class));
+        assertNotNull(NetworkImageView.class.getMethod("setErrorImageResId", int.class));
     }
 }
