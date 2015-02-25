@@ -62,14 +62,104 @@
             <target>${java.version}</target>
           </configuration>
         </plugin>
-
-	<plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>emma-maven-plugin</artifactId>
-          <version>1.0-alpha-3</version>
-        </plugin>
-
       </plugins>
     </pluginManagement>
   </build>
+
+  <profiles>
+    <profile>
+      <id>debug</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+        <property>
+          <name>performDebugBuild</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>2.18.1</version>
+            <executions>
+              <execution>
+                <id>default-test</id>
+                <configuration>
+                  <argLine>${surefireArgLine}</argLine>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <!-- don't upgrade the version. newer versions generate different results
+             see https://github.com/jacoco/jacoco/issues/286 -->
+            <version>0.7.2.201409121644</version>
+            <executions>
+              <execution>
+                <id>pre-unit-test</id>
+                <goals>
+                  <goal>prepare-agent</goal>
+                </goals>
+                <configuration>
+                  <destFile>${project.build.directory}/surefire-reports/jacoco-ut.exec</destFile>
+                  <propertyName>surefireArgLine</propertyName>
+                </configuration>
+              </execution>
+              <execution>
+                <id>jacoco-report</id>
+                <phase>post-integration-test</phase>
+                <goals>
+                  <goal>report</goal>
+                  <goal>check</goal>
+                </goals>
+                <configuration>
+                  <dataFile>${project.build.directory}/surefire-reports/jacoco-ut.exec</dataFile>
+                  <outputDirectory>${project.build.directory}/jacoco-report</outputDirectory>
+                  <rules>
+                    <rule>
+                      <element>BUNDLE</element>
+                      <limits>
+                        <limit>
+                          <counter>INSTRUCTION</counter>
+                          <value>COVEREDRATIO</value>
+                          <minimum>0.40</minimum>
+                        </limit>
+                        <!-- enable this if you want that the build breaks if there is a class without a test -->
+                        <!--
+                        <limit>
+                          <counter>CLASS</counter>
+                          <value>MISSEDCOUNT</value>
+                          <maximum>0</maximum>
+                        </limit>
+                        -->
+                      </limits>
+                    </rule>
+                    <!-- enable this if you want a limit for each java class -->
+                    <!--
+                    <rule>
+                      <element>CLASS</element>
+                      <excludes>
+                        <exclude>*Test</exclude>
+                      </excludes>
+                      <limits>
+                        <limit>
+                          <counter>LINE</counter>
+                          <value>COVEREDRATIO</value>
+                          <minimum>0.10</minimum>
+                        </limit>
+                      </limits>
+                    </rule>
+                    -->
+                  </rules>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
