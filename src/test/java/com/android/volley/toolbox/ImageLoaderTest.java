@@ -17,6 +17,7 @@
 package com.android.volley.toolbox;
 
 import android.graphics.Bitmap;
+import android.widget.ImageView;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import org.junit.Assert;
@@ -25,6 +26,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.*;
 
 @RunWith(RobolectricTestRunner.class)
@@ -75,6 +77,23 @@ public class ImageLoaderTest {
         // Catch API breaking changes.
         ImageLoader.getImageListener(null, -1, -1);
         mImageLoader.setBatchedResponseDelay(1000);
+
+        assertNotNull(ImageLoader.class.getConstructor(RequestQueue.class,
+                ImageLoader.ImageCache.class));
+
+        assertNotNull(ImageLoader.class.getMethod("getImageListener", ImageView.class,
+                int.class, int.class));
+        assertNotNull(ImageLoader.class.getMethod("isCached", String.class, int.class, int.class));
+        assertNotNull(ImageLoader.class.getMethod("get", String.class,
+                ImageLoader.ImageListener.class));
+        assertNotNull(ImageLoader.class.getMethod("get", String.class,
+                ImageLoader.ImageListener.class, int.class, int.class));
+        assertNotNull(ImageLoader.class.getMethod("get", String.class,
+                ImageLoader.ImageListener.class, int.class, int.class, ImageView.ScaleType.class));
+        assertNotNull(ImageLoader.class.getMethod("setBatchedResponseDelay", int.class));
+
+        assertNotNull(ImageLoader.ImageListener.class.getMethod("onResponse",
+                ImageLoader.ImageContainer.class, boolean.class));
     }
 }
 

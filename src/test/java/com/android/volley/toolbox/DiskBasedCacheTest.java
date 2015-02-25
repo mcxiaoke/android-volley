@@ -22,6 +22,7 @@ import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -124,8 +125,8 @@ public class DiskBasedCacheTest {
         assertEquals(DiskBasedCache.readStringStringMap(bais), emptyValue);
     }
 
-    // Test deserializing the old format into the new one.
-    public void testCacheHeaderSerializationOldToNewFormat() throws Exception {
+    /** deserializing the old format into the new one. */
+    @Test public void testCacheHeaderSerializationOldToNewFormat() throws Exception {
 
         final int CACHE_MAGIC = 0x20140623;
         final String key = "key";
@@ -161,5 +162,14 @@ public class DiskBasedCacheTest {
 
         // the old format doesn't know lastModified
         assertEquals(cacheHeader.lastModified, 0);
+    }
+
+    @Test
+    public void publicMethods() throws Exception {
+        // Catch-all test to find API-breaking changes.
+        assertNotNull(DiskBasedCache.class.getConstructor(File.class, int.class));
+        assertNotNull(DiskBasedCache.class.getConstructor(File.class));
+
+        assertNotNull(DiskBasedCache.class.getMethod("getFileForKey", String.class));
     }
 }
