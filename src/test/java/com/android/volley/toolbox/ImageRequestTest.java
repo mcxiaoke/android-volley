@@ -18,6 +18,7 @@ package com.android.volley.toolbox;
 
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
+import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Response;
@@ -157,5 +158,15 @@ public class ImageRequestTest {
         }
         in.close();
         return bytes.toByteArray();
+    }
+
+    @Test
+    public void publicMethods() throws Exception {
+        // Catch-all test to find API-breaking changes.
+        assertNotNull(ImageRequest.class.getConstructor(String.class, Response.Listener.class,
+                int.class, int.class, Bitmap.Config.class, Response.ErrorListener.class));
+        assertNotNull(ImageRequest.class.getConstructor(String.class, Response.Listener.class,
+                int.class, int.class, ImageView.ScaleType.class, Bitmap.Config.class,
+                Response.ErrorListener.class));
     }
 }
