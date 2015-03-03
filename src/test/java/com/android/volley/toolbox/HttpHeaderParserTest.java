@@ -40,6 +40,7 @@ public class HttpHeaderParserTest {
 
     private static long ONE_MINUTE_MILLIS = 1000L * 60;
     private static long ONE_HOUR_MILLIS = 1000L * 60 * 60;
+    private static long ONE_DAY_MILLIS = ONE_HOUR_MILLIS * 24;
 
     private NetworkResponse response;
     private Map<String, String> headers;
@@ -55,6 +56,7 @@ public class HttpHeaderParserTest {
         assertNotNull(entry);
         assertNull(entry.etag);
         assertEquals(0, entry.serverDate);
+        assertEquals(0, entry.lastModified);
         assertEquals(0, entry.ttl);
         assertEquals(0, entry.softTtl);
     }
@@ -82,6 +84,7 @@ public class HttpHeaderParserTest {
     @Test public void parseCacheHeaders_normalExpire() {
         long now = System.currentTimeMillis();
         headers.put("Date", rfc1123Date(now));
+        headers.put("Last-Modified", rfc1123Date(now - ONE_DAY_MILLIS));
         headers.put("Expires", rfc1123Date(now + ONE_HOUR_MILLIS));
 
         Cache.Entry entry = HttpHeaderParser.parseCacheHeaders(response);
@@ -89,6 +92,7 @@ public class HttpHeaderParserTest {
         assertNotNull(entry);
         assertNull(entry.etag);
         assertEqualsWithin(entry.serverDate, now, ONE_MINUTE_MILLIS);
+        assertEqualsWithin(entry.lastModified, (now - ONE_DAY_MILLIS), ONE_MINUTE_MILLIS);
         assertTrue(entry.softTtl >= (now + ONE_HOUR_MILLIS));
         assertTrue(entry.ttl == entry.softTtl);
     }
@@ -135,6 +139,24 @@ public class HttpHeaderParserTest {
         assertEquals(entry.softTtl, entry.ttl);
     }
 
+    @Test public void testParseCacheHeaders_staleWhileRevalidate() {
+        long now = System.currentTimeMillis();
+        headers.put("Date", rfc1123Date(now));
+        headers.put("Expires", rfc1123Date(now + ONE_HOUR_MILLIS));
+
+        // - max-age (entry.softTtl) indicates that the asset is fresh for 1 day
+        // - stale-while-revalidate (entry.ttl) indicates that the asset may
+        // continue to be served stale for up to additional 7 days
+        headers.put("Cache-Control", "max-age=86400, stale-while-revalidate=604800");
+
+        Cache.Entry entry = HttpHeaderParser.parseCacheHeaders(response);
+
+        assertNotNull(entry);
+        assertNull(entry.etag);
+        assertEqualsWithin(now + 24 * ONE_HOUR_MILLIS, entry.softTtl, ONE_MINUTE_MILLIS);
+        assertEqualsWithin(now + 8 * 24 * ONE_HOUR_MILLIS, entry.ttl, ONE_MINUTE_MILLIS);
+    }
+
     @Test public void parseCacheHeaders_cacheControlNoCache() {
         long now = System.currentTimeMillis();
         headers.put("Date", rfc1123Date(now));
@@ -177,6 +199,10 @@ public class HttpHeaderParserTest {
         headers.put("Content-Type", "text/plain; charset=utf-8");
         assertEquals("utf-8", HttpHeaderParser.parseCharset(headers));
 
+        // Charset specified, ignore default charset
+        headers.put("Content-Type", "text/plain; charset=utf-8");
+        assertEquals("utf-8", HttpHeaderParser.parseCharset(headers, "ISO-8859-1"));
+
         // Extra whitespace
         headers.put("Content-Type", "text/plain;    charset=utf-8 ");
         assertEquals("utf-8", HttpHeaderParser.parseCharset(headers));
@@ -189,6 +215,10 @@ public class HttpHeaderParserTest {
         headers.clear();
         assertEquals("ISO-8859-1", HttpHeaderParser.parseCharset(headers));
 
+        // No Content-Type header, use default charset
+        headers.clear();
+        assertEquals("utf-8", HttpHeaderParser.parseCharset(headers, "utf-8"));
+
         // Empty value
         headers.put("Content-Type", "text/plain; charset=");
         assertEquals("ISO-8859-1", HttpHeaderParser.parseCharset(headers));
@@ -196,6 +226,10 @@ public class HttpHeaderParserTest {
         // None specified
         headers.put("Content-Type", "text/plain");
         assertEquals("ISO-8859-1", HttpHeaderParser.parseCharset(headers));
+
+        // None charset specified, use default charset
+        headers.put("Content-Type", "application/json");
+        assertEquals("utf-8", HttpHeaderParser.parseCharset(headers, "utf-8"));
 
         // None specified, extra semicolon
         headers.put("Content-Type", "text/plain;");
