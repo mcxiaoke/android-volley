@@ -74,6 +74,9 @@ public interface Cache {
         /** Date of this response as reported by the server. */
         public long serverDate;
 
+        /** The last modified date for the requested object. */
+        public long lastModified;
+
         /** TTL for this record. */
         public long ttl;
 

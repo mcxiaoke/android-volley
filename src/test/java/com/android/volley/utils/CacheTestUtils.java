@@ -24,7 +24,7 @@ public class CacheTestUtils {
             entry.data = new byte[random.nextInt(1024)];
         }
         entry.etag = String.valueOf(random.nextLong());
-        entry.serverDate = random.nextLong();
+        entry.lastModified = random.nextLong();
         entry.ttl = isExpired ? 0 : Long.MAX_VALUE;
         entry.softTtl = needsRefresh ? 0 : Long.MAX_VALUE;
         return entry;
