@@ -349,6 +349,9 @@ public class DiskBasedCache implements Cache {
         /** Date of this response as reported by the server. */
         public long serverDate;
 
+        /** The last modified date for the requested object. */
+        public long lastModified;
+
         /** TTL for this record. */
         public long ttl;
 
@@ -370,6 +373,7 @@ public class DiskBasedCache implements Cache {
             this.size = entry.data.length;
             this.etag = entry.etag;
             this.serverDate = entry.serverDate;
+            this.lastModified = entry.lastModified;
             this.ttl = entry.ttl;
             this.softTtl = entry.softTtl;
             this.responseHeaders = entry.responseHeaders;
@@ -396,6 +400,13 @@ public class DiskBasedCache implements Cache {
             entry.ttl = readLong(is);
             entry.softTtl = readLong(is);
             entry.responseHeaders = readStringStringMap(is);
+
+            try {
+                entry.lastModified = readLong(is);
+            } catch (EOFException e) {
+                // the old cache entry format doesn't know lastModified
+            }
+
             return entry;
         }
 
@@ -407,6 +418,7 @@ public class DiskBasedCache implements Cache {
             e.data = data;
             e.etag = etag;
             e.serverDate = serverDate;
+            e.lastModified = lastModified;
             e.ttl = ttl;
             e.softTtl = softTtl;
             e.responseHeaders = responseHeaders;
@@ -426,6 +438,7 @@ public class DiskBasedCache implements Cache {
                 writeLong(os, ttl);
                 writeLong(os, softTtl);
                 writeStringStringMap(responseHeaders, os);
+                writeLong(os, lastModified);
                 os.flush();
                 return true;
             } catch (IOException e) {

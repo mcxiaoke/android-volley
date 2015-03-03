@@ -20,6 +20,7 @@ import android.graphics.Bitmap.Config;
 import android.os.Handler;
 import android.os.Looper;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -171,6 +172,15 @@ public class ImageLoader {
     }
 
     /**
+     * Equivalent to calling {@link #get(String, ImageListener, int, int, ScaleType)} with
+     * {@code Scaletype == ScaleType.CENTER_INSIDE}.
+     */
+    public ImageContainer get(String requestUrl, ImageListener imageListener,
+            int maxWidth, int maxHeight) {
+        return get(requestUrl, imageListener, maxWidth, maxHeight, ScaleType.CENTER_INSIDE);
+    }
+
+    /**
      * Issues a bitmap request with the given URL if that image is not available
      * in the cache, and returns a bitmap container that contains all of the data
      * relating to the request (as well as the default image if the requested
@@ -179,11 +189,13 @@ public class ImageLoader {
      * @param imageListener The listener to call when the remote image is loaded
      * @param maxWidth The maximum width of the returned image.
      * @param maxHeight The maximum height of the returned image.
+     * @param scaleType The ImageViews ScaleType used to calculate the needed image size.
      * @return A container object that contains all of the properties of the request, as well as
      *     the currently available image (default if remote is not loaded).
      */
     public ImageContainer get(String requestUrl, ImageListener imageListener,
-            int maxWidth, int maxHeight) {
+            int maxWidth, int maxHeight, ScaleType scaleType) {
+        
         // only fulfill requests that were initiated from the main thread.
         throwIfNotOnMainThread();
 
@@ -215,7 +227,8 @@ public class ImageLoader {
 
         // The request is not already in flight. Send the new request to the network and
         // track it.
-        Request<Bitmap> newRequest = makeImageRequest(requestUrl, maxWidth, maxHeight, cacheKey);
+        Request<Bitmap> newRequest = makeImageRequest(requestUrl, maxWidth, maxHeight, scaleType,
+                cacheKey);
 
         mRequestQueue.add(newRequest);
         mInFlightRequests.put(cacheKey,
@@ -223,14 +236,14 @@ public class ImageLoader {
         return imageContainer;
     }
 
-    protected Request<Bitmap> makeImageRequest(String requestUrl, int maxWidth, int maxHeight, final String cacheKey) {
+    protected Request<Bitmap> makeImageRequest(String requestUrl, int maxWidth, int maxHeight,
+            ScaleType scaleType, final String cacheKey) {
         return new ImageRequest(requestUrl, new Listener<Bitmap>() {
             @Override
             public void onResponse(Bitmap response) {
                 onGetImageSuccess(cacheKey, response);
             }
-        }, maxWidth, maxHeight,
-        Config.RGB_565, new ErrorListener() {
+        }, maxWidth, maxHeight, scaleType, Config.RGB_565, new ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 onGetImageError(cacheKey, error);

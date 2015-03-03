@@ -22,6 +22,7 @@ import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,6 +35,7 @@ public class DiskBasedCacheTest {
         Cache.Entry e = new Cache.Entry();
         e.data = new byte[8];
         e.serverDate = 1234567L;
+        e.lastModified = 13572468L;
         e.ttl = 9876543L;
         e.softTtl = 8765432L;
         e.etag = "etag";
@@ -48,6 +50,7 @@ public class DiskBasedCacheTest {
 
         assertEquals(first.key, second.key);
         assertEquals(first.serverDate, second.serverDate);
+        assertEquals(first.lastModified, second.lastModified);
         assertEquals(first.ttl, second.ttl);
         assertEquals(first.softTtl, second.softTtl);
         assertEquals(first.etag, second.etag);
@@ -120,5 +123,53 @@ public class DiskBasedCacheTest {
         assertEquals(DiskBasedCache.readStringStringMap(bais), twoThings);
         assertEquals(DiskBasedCache.readStringStringMap(bais), emptyKey);
         assertEquals(DiskBasedCache.readStringStringMap(bais), emptyValue);
+    }
+
+    /** deserializing the old format into the new one. */
+    @Test public void testCacheHeaderSerializationOldToNewFormat() throws Exception {
+
+        final int CACHE_MAGIC = 0x20140623;
+        final String key = "key";
+        final String etag = "etag";
+        final long serverDate = 1234567890l;
+        final long ttl = 1357924680l;
+        final long softTtl = 2468013579l;
+
+        Map<String, String> responseHeaders = new HashMap<String, String>();
+        responseHeaders.put("first", "thing");
+        responseHeaders.put("second", "item");
+
+        // write old sytle header (without lastModified)
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        DiskBasedCache.writeInt(baos, CACHE_MAGIC);
+        DiskBasedCache.writeString(baos, key);
+        DiskBasedCache.writeString(baos, etag == null ? "" : etag);
+        DiskBasedCache.writeLong(baos, serverDate);
+        DiskBasedCache.writeLong(baos, ttl);
+        DiskBasedCache.writeLong(baos, softTtl);
+        DiskBasedCache.writeStringStringMap(responseHeaders, baos);
+
+        // read / test new style header (with lastModified)
+        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+        CacheHeader cacheHeader = CacheHeader.readHeader(bais);
+
+        assertEquals(cacheHeader.key, key);
+        assertEquals(cacheHeader.etag, etag);
+        assertEquals(cacheHeader.serverDate, serverDate);
+        assertEquals(cacheHeader.ttl, ttl);
+        assertEquals(cacheHeader.softTtl, softTtl);
+        assertEquals(cacheHeader.responseHeaders, responseHeaders);
+
+        // the old format doesn't know lastModified
+        assertEquals(cacheHeader.lastModified, 0);
+    }
+
+    @Test
+    public void publicMethods() throws Exception {
+        // Catch-all test to find API-breaking changes.
+        assertNotNull(DiskBasedCache.class.getConstructor(File.class, int.class));
+        assertNotNull(DiskBasedCache.class.getConstructor(File.class));
+
+        assertNotNull(DiskBasedCache.class.getMethod("getFileForKey", String.class));
     }
 }
