@@ -91,7 +91,7 @@ public class ImageLoader {
      * The default implementation of ImageListener which handles basic functionality
      * of showing a default image until the network response is received, at which point
      * it will switch to either the actual image or the error image.
-     * @param imageView The imageView that the listener is associated with.
+     * @param view The imageView that the listener is associated with.
      * @param defaultImageResId Default image resource ID to use, or 0 if it doesn't exist.
      * @param errorImageResId Error image resource ID to use, or 0 if it doesn't exist.
      */
@@ -165,7 +165,6 @@ public class ImageLoader {
      * request is fulfilled.
      *
      * @param requestUrl The URL of the image to be loaded.
-     * @param defaultImage Optional default image to return until the actual image is loaded.
      */
     public ImageContainer get(String requestUrl, final ImageListener listener) {
         return get(requestUrl, listener, 0, 0);
@@ -441,7 +440,6 @@ public class ImageLoader {
      * Starts the runnable for batched delivery of responses if it is not already started.
      * @param cacheKey The cacheKey of the response being delivered.
      * @param request The BatchedImageRequest to be delivered.
-     * @param error The volley error associated with the request (if applicable).
      */
     private void batchResponse(String cacheKey, BatchedImageRequest request) {
         mBatchedResponses.put(cacheKey, request);
