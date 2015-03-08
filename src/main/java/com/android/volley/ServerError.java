@@ -16,9 +16,6 @@
 
 package com.android.volley;
 
-import com.android.volley.NetworkResponse;
-import com.android.volley.VolleyError;
-
 /**
  * Indicates that the server responded with an error response.
  */

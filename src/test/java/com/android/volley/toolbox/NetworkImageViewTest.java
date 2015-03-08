@@ -5,7 +5,6 @@ import android.util.AttributeSet;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView.ScaleType;
 
-import com.android.volley.Cache;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
