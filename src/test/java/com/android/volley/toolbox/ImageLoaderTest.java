@@ -84,6 +84,8 @@ public class ImageLoaderTest {
         assertNotNull(ImageLoader.class.getMethod("getImageListener", ImageView.class,
                 int.class, int.class));
         assertNotNull(ImageLoader.class.getMethod("isCached", String.class, int.class, int.class));
+        assertNotNull(ImageLoader.class.getMethod("isCached", String.class, int.class, int.class,
+                ImageView.ScaleType.class));
         assertNotNull(ImageLoader.class.getMethod("get", String.class,
                 ImageLoader.ImageListener.class));
         assertNotNull(ImageLoader.class.getMethod("get", String.class,
