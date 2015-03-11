@@ -17,6 +17,10 @@ buildscript {
 
 apply plugin: 'com.android.library'
 
+dependencies {
+	compile 'com.google.code.gson:gson:2.3'
+}
+
 android {
     compileSdkVersion 19
     buildToolsVersion = '21.1.0'
