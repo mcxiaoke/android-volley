@@ -6,3 +6,4 @@ build
 target
 *.iml
 .idea
+local.properties
