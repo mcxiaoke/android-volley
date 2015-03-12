@@ -49,6 +49,7 @@ public class HttpHeaderParser {
         long maxAge = 0;
         long staleWhileRevalidate = 0;
         boolean hasCacheControl = false;
+        boolean mustRevalidate = false;
 
         String serverEtag = null;
         String headerValue;
@@ -77,7 +78,7 @@ public class HttpHeaderParser {
                     } catch (Exception e) {
                     }
                 } else if (token.equals("must-revalidate") || token.equals("proxy-revalidate")) {
-                    maxAge = 0;
+                    mustRevalidate = true;
                 }
             }
         }
@@ -98,7 +99,9 @@ public class HttpHeaderParser {
         // is more restrictive.
         if (hasCacheControl) {
             softExpire = now + maxAge * 1000;
-            finalExpire = softExpire + staleWhileRevalidate * 1000;
+            finalExpire = mustRevalidate
+                    ? softExpire
+                    : softExpire + staleWhileRevalidate * 1000;
         } else if (serverDate > 0 && serverExpires >= serverDate) {
             // Default semantic for Expire header in HTTP specification is softExpire.
             softExpire = now + (serverExpires - serverDate);

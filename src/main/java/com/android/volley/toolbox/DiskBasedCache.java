@@ -62,7 +62,7 @@ public class DiskBasedCache implements Cache {
     private static final float HYSTERESIS_FACTOR = 0.9f;
 
     /** Magic number for current version of cache file format. */
-    private static final int CACHE_MAGIC = 0x20140623;
+    private static final int CACHE_MAGIC = 0x20150306;
 
     /**
      * Constructs an instance of the DiskBasedCache at the specified directory.
@@ -397,15 +397,10 @@ public class DiskBasedCache implements Cache {
                 entry.etag = null;
             }
             entry.serverDate = readLong(is);
+            entry.lastModified = readLong(is);
             entry.ttl = readLong(is);
             entry.softTtl = readLong(is);
             entry.responseHeaders = readStringStringMap(is);
-
-            try {
-                entry.lastModified = readLong(is);
-            } catch (EOFException e) {
-                // the old cache entry format doesn't know lastModified
-            }
 
             return entry;
         }
@@ -435,10 +430,10 @@ public class DiskBasedCache implements Cache {
                 writeString(os, key);
                 writeString(os, etag == null ? "" : etag);
                 writeLong(os, serverDate);
+                writeLong(os, lastModified);
                 writeLong(os, ttl);
                 writeLong(os, softTtl);
                 writeStringStringMap(responseHeaders, os);
-                writeLong(os, lastModified);
                 os.flush();
                 return true;
             } catch (IOException e) {
