@@ -41,6 +41,7 @@ public class HttpHeaderParserTest {
     private static long ONE_MINUTE_MILLIS = 1000L * 60;
     private static long ONE_HOUR_MILLIS = 1000L * 60 * 60;
     private static long ONE_DAY_MILLIS = ONE_HOUR_MILLIS * 24;
+    private static long ONE_WEEK_MILLIS = ONE_DAY_MILLIS * 7;
 
     private NetworkResponse response;
     private Map<String, String> headers;
@@ -135,7 +136,7 @@ public class HttpHeaderParserTest {
 
         assertNotNull(entry);
         assertNull(entry.etag);
-        assertEqualsWithin(now + 24 * ONE_HOUR_MILLIS, entry.ttl, ONE_MINUTE_MILLIS);
+        assertEqualsWithin(now + ONE_DAY_MILLIS, entry.ttl, ONE_MINUTE_MILLIS);
         assertEquals(entry.softTtl, entry.ttl);
     }
 
@@ -153,8 +154,8 @@ public class HttpHeaderParserTest {
 
         assertNotNull(entry);
         assertNull(entry.etag);
-        assertEqualsWithin(now + 24 * ONE_HOUR_MILLIS, entry.softTtl, ONE_MINUTE_MILLIS);
-        assertEqualsWithin(now + 8 * 24 * ONE_HOUR_MILLIS, entry.ttl, ONE_MINUTE_MILLIS);
+        assertEqualsWithin(now + ONE_DAY_MILLIS, entry.softTtl, ONE_MINUTE_MILLIS);
+        assertEqualsWithin(now + ONE_DAY_MILLIS + ONE_WEEK_MILLIS, entry.ttl, ONE_MINUTE_MILLIS);
     }
 
     @Test public void parseCacheHeaders_cacheControlNoCache() {
@@ -168,17 +169,48 @@ public class HttpHeaderParserTest {
         assertNull(entry);
     }
 
-    @Test public void parseCacheHeaders_cacheControlMustRevalidate() {
+    @Test public void parseCacheHeaders_cacheControlMustRevalidateNoMaxAge() {
         long now = System.currentTimeMillis();
         headers.put("Date", rfc1123Date(now));
         headers.put("Expires", rfc1123Date(now + ONE_HOUR_MILLIS));
         headers.put("Cache-Control", "must-revalidate");
 
         Cache.Entry entry = HttpHeaderParser.parseCacheHeaders(response);
-
         assertNotNull(entry);
         assertNull(entry.etag);
         assertEqualsWithin(now, entry.ttl, ONE_MINUTE_MILLIS);
+        assertEquals(entry.softTtl, entry.ttl);
+    }
+
+    @Test public void parseCacheHeaders_cacheControlMustRevalidateWithMaxAge() {
+        long now = System.currentTimeMillis();
+        headers.put("Date", rfc1123Date(now));
+        headers.put("Expires", rfc1123Date(now + ONE_HOUR_MILLIS));
+        headers.put("Cache-Control", "must-revalidate, max-age=3600");
+
+        Cache.Entry entry = HttpHeaderParser.parseCacheHeaders(response);
+        assertNotNull(entry);
+        assertNull(entry.etag);
+        assertEqualsWithin(now + ONE_HOUR_MILLIS, entry.ttl, ONE_MINUTE_MILLIS);
+        assertEquals(entry.softTtl, entry.ttl);
+    }
+
+    @Test public void parseCacheHeaders_cacheControlMustRevalidateWithMaxAgeAndStale() {
+        long now = System.currentTimeMillis();
+        headers.put("Date", rfc1123Date(now));
+        headers.put("Expires", rfc1123Date(now + ONE_HOUR_MILLIS));
+
+        // - max-age (entry.softTtl) indicates that the asset is fresh for 1 day
+        // - stale-while-revalidate (entry.ttl) indicates that the asset may
+        // continue to be served stale for up to additional 7 days, but this is
+        // ignored in this case because of the must-revalidate header.
+        headers.put("Cache-Control",
+                "must-revalidate, max-age=86400, stale-while-revalidate=604800");
+
+        Cache.Entry entry = HttpHeaderParser.parseCacheHeaders(response);
+        assertNotNull(entry);
+        assertNull(entry.etag);
+        assertEqualsWithin(now + ONE_DAY_MILLIS, entry.softTtl, ONE_MINUTE_MILLIS);
         assertEquals(entry.softTtl, entry.ttl);
     }
 
@@ -253,7 +285,7 @@ public class HttpHeaderParserTest {
 
         assertNotNull(entry);
         assertEquals("Yow!", entry.etag);
-        assertEqualsWithin(now + 24 * ONE_HOUR_MILLIS, entry.ttl, ONE_MINUTE_MILLIS);
+        assertEqualsWithin(now + ONE_DAY_MILLIS, entry.ttl, ONE_MINUTE_MILLIS);
         assertEquals(entry.softTtl, entry.ttl);
         assertEquals("ISO-8859-1", HttpHeaderParser.parseCharset(headers));
     }
