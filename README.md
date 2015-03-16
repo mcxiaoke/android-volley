@@ -2,13 +2,44 @@ Android Volley
 ----------
 This is an unofficial mirror for [android volley library](https://android.googlesource.com/platform/frameworks/volley), the source code will synchronize periodically with the official volley repository.
 
-## Introduction
 
-Volley is already published to Maven Central.
+## Status
 
-#### latest version
+Volley is already published to Maven Central.  
 
 * [![Maven Central](http://img.shields.io/badge/2015.03.16-com.mcxiaoke.volley:library:1.0.13-brightgreen.svg)](http://search.maven.org/#artifactdetails%7Ccom.mcxiaoke.volley%7Clibrary%7C1.0.13%7Cjar) 
+
+
+## Usage
+
+#### for Maven
+
+format: jar
+
+```
+<dependency>
+    <groupId>com.mcxiaoke.volley</groupId>
+    <artifactId>library</artifactId>
+    <version>{latest-version}</version>
+</dependency>
+```
+
+
+#### for Gradle
+
+format: jar
+
+```
+compile 'com.mcxiaoke.volley:library:1.0.+'
+```
+
+
+format: aar
+
+```
+compile 'com.mcxiaoke.volley:library:1.0.+@aar'
+```
+
 
 
 ## History
@@ -68,36 +99,6 @@ Volley is already published to Maven Central.
     * merge pr, added constructor to JSONArrayRequest 
 
 
-
-## Usage
-
-#### for Maven
-
-format: jar
-
-```
-<dependency>
-    <groupId>com.mcxiaoke.volley</groupId>
-    <artifactId>library</artifactId>
-    <version>{latest-version}</version>
-</dependency>
-```
-
-
-#### for Gradle
-
-format: jar
-
-```
-compile 'com.mcxiaoke.volley:library:1.0.+'
-```
-
-
-format: aar
-
-```
-compile 'com.mcxiaoke.volley:library:1.0.+@aar'
-```
 
 
 ## Attention  
