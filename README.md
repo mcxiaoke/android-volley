@@ -8,7 +8,7 @@ Volley is already published to Maven Central.
 
 #### latest version
 
-* [![Maven Central](http://img.shields.io/badge/2015.03.12-com.mcxiaoke.volley:library:1.0.12-brightgreen.svg)](http://search.maven.org/#artifactdetails%7Ccom.mcxiaoke.volley%7Clibrary%7C1.0.12%7Cjar) 
+* [![Maven Central](http://img.shields.io/badge/2015.03.16-com.mcxiaoke.volley:library:1.0.13-brightgreen.svg)](http://search.maven.org/#artifactdetails%7Ccom.mcxiaoke.volley%7Clibrary%7C1.0.13%7Cjar) 
 
 
 ## Usage
