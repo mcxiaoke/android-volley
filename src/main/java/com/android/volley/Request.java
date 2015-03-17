@@ -72,6 +72,9 @@ public abstract class Request<T> implements Comparable<Request<T>> {
     /** The redirect url to use for 3xx http responses */
     private String mRedirectUrl;
 
+    /** The unique identifier of the request */
+    private String mIdentifier;
+
     /** Default tag for {@link TrafficStats}. */
     private final int mDefaultTrafficStatsTag;
 
@@ -134,6 +137,7 @@ public abstract class Request<T> implements Comparable<Request<T>> {
     public Request(int method, String url, Response.ErrorListener listener) {
         mMethod = method;
         mUrl = url;
+        mIdentifier = createIdentifier(method, url);
         mErrorListener = listener;
         setRetryPolicy(new DefaultRetryPolicy());
 
@@ -295,6 +299,13 @@ public abstract class Request<T> implements Comparable<Request<T>> {
      */
     public String getOriginUrl() {
     	return mUrl;
+    }
+
+    /**
+     * Returns the identifier of the request.
+     */
+    public String getIdentifier() {
+        return mIdentifier;
     }
     
     /**
@@ -616,5 +627,17 @@ public abstract class Request<T> implements Comparable<Request<T>> {
         String trafficStatsTag = "0x" + Integer.toHexString(getTrafficStatsTag());
         return (mCanceled ? "[X] " : "[ ] ") + getUrl() + " " + trafficStatsTag + " "
                 + getPriority() + " " + mSequence;
+    }
+
+    private static long sCounter;
+    /**
+     *  sha1(Request:method:url:timestamp:counter)
+     * @param method http method
+     * @param url               http request url
+     * @return sha1 hash string
+     */
+    private static String createIdentifier(final int method, final String url) {
+        return InternalUtils.sha1Hash("Request:" + method + ":" + url +
+                ":" + System.currentTimeMillis() + ":" + (sCounter++));
     }
 }
