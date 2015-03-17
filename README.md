@@ -98,7 +98,7 @@ compile 'com.mcxiaoke.volley:library:1.0.+@aar'
 * **1.0.13 2015.03.16**
     * merge pr, added constructor to JSONArrayRequest 
     
-* **1.0.14 2015.03.16**
+* **1.0.14 2015.03.17**
     * add more constructors for JsonArrayRequest and JsonObjectRequest
     * update and fix gradle build, using new build.gradle
 
