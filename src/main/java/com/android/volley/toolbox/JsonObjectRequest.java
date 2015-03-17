@@ -21,7 +21,6 @@ import com.android.volley.ParseError;
 import com.android.volley.Response;
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -37,6 +36,31 @@ public class JsonObjectRequest extends JsonRequest<JSONObject> {
      * Creates a new request.
      * @param method the HTTP method to use
      * @param url URL to fetch the JSON from
+     * @param requestBody A {@link String} to post with the request. Null is allowed and
+     *   indicates no parameters will be posted along with request.
+     * @param listener Listener to receive the JSON response
+     * @param errorListener Error listener, or null to ignore errors.
+     */
+    public JsonObjectRequest(int method, String url, String requestBody,
+                             Listener<JSONObject> listener, ErrorListener errorListener) {
+        super(method, url, requestBody, listener,
+                errorListener);
+    }
+
+    /**
+     * Creates a new request.
+     * @param url URL to fetch the JSON from
+     * @param listener Listener to receive the JSON response
+     * @param errorListener Error listener, or null to ignore errors.
+     */
+    public JsonObjectRequest(String url, Listener<JSONObject> listener, ErrorListener errorListener) {
+        super(Method.GET, url, null, listener, errorListener);
+    }
+
+    /**
+     * Creates a new request.
+     * @param method the HTTP method to use
+     * @param url URL to fetch the JSON from
      * @param jsonRequest A {@link JSONObject} to post with the request. Null is allowed and
      *   indicates no parameters will be posted along with request.
      * @param listener Listener to receive the JSON response
@@ -45,7 +69,7 @@ public class JsonObjectRequest extends JsonRequest<JSONObject> {
     public JsonObjectRequest(int method, String url, JSONObject jsonRequest,
             Listener<JSONObject> listener, ErrorListener errorListener) {
         super(method, url, (jsonRequest == null) ? null : jsonRequest.toString(), listener,
-                    errorListener);
+                errorListener);
     }
 
     /**
