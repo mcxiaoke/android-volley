@@ -11,11 +11,15 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.14.+'
+        classpath 'com.android.tools.build:gradle:1.0.0'
     }
 }
 
 apply plugin: 'com.android.library'
+
+dependencies {
+	compile 'com.google.code.gson:gson:2.3'
+}
 
 android {
     compileSdkVersion 19
