@@ -7,7 +7,7 @@ This is an unofficial mirror for [android volley library](https://android.google
 
 Volley is already published to Maven Central.  
 
-* [![Maven Central](http://img.shields.io/badge/2015.03.17-com.mcxiaoke.volley:library:1.0.14-brightgreen.svg)](http://search.maven.org/#artifactdetails%7Ccom.mcxiaoke.volley%7Clibrary%7C1.0.14%7Cjar) 
+* [![Maven Central](http://img.shields.io/badge/2015.03.18-com.mcxiaoke.volley:library:1.0.15-brightgreen.svg)](http://search.maven.org/#artifactdetails%7Ccom.mcxiaoke.volley%7Clibrary%7C1.0.15%7Cjar) 
 
 
 ## Usage
@@ -101,7 +101,10 @@ compile 'com.mcxiaoke.volley:library:1.0.+@aar'
 * **1.0.14 2015.03.17**
     * add more constructors for JsonArrayRequest and JsonObjectRequest
     * update and fix gradle build, using new build.gradle
-
+    
+* **1.0.15 2015.03.18**
+    * add two missing constructors for JsonArrayRequest and JsonObjectRequest
+    * add unique identifier for Request
 
 
 
