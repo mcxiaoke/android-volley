@@ -42,6 +42,21 @@ public class JsonArrayRequest extends JsonRequest<JSONArray> {
         super(Method.GET, url, null, listener, errorListener);
     }
 
+    /**
+     * Creates a new request.
+     * @param method the HTTP method to use
+     * @param url URL to fetch the JSON from
+     * @param jsonRequest A {@link JSONArray} to post with the request. Null is allowed and
+     *   indicates no parameters will be posted along with request.
+     * @param listener Listener to receive the JSON response
+     * @param errorListener Error listener, or null to ignore errors.
+     */
+    public JsonArrayRequest(int method, String url, JSONArray jsonRequest,
+                            Listener<JSONArray> listener, ErrorListener errorListener) {
+        super(method, url, (jsonRequest == null) ? null : jsonRequest.toString(), listener,
+                errorListener);
+    }
+
     @Override
     protected Response<JSONArray> parseNetworkResponse(NetworkResponse response) {
         try {
