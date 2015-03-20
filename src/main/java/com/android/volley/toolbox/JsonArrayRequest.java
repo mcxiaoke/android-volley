@@ -122,7 +122,7 @@ public class JsonArrayRequest extends JsonRequest<JSONArray> {
         this(jsonRequest == null ? Method.GET : Method.POST, url, jsonRequest,
                 listener, errorListener);
     }
-    
+
     @Override
     protected Response<JSONArray> parseNetworkResponse(NetworkResponse response) {
         try {
