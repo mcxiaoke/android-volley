@@ -22,6 +22,7 @@ import com.android.volley.Cache;
 import com.android.volley.VolleyLog;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
@@ -196,7 +197,7 @@ public class DiskBasedCache implements Cache {
         pruneIfNeeded(entry.data.length);
         File file = getFileForKey(key);
         try {
-            FileOutputStream fos = new FileOutputStream(file);
+            BufferedOutputStream fos = new BufferedOutputStream(new FileOutputStream(file));
             CacheHeader e = new CacheHeader(key, entry);
             boolean success = e.writeHeader(fos);
             if (!success) {
