@@ -114,7 +114,7 @@ public class DiskBasedCache implements Cache {
         File file = getFileForKey(key);
         CountingInputStream cis = null;
         try {
-            cis = new CountingInputStream(new FileInputStream(file));
+            cis = new CountingInputStream(new BufferedInputStream(new FileInputStream(file)));
             CacheHeader.readHeader(cis); // eat header
             byte[] data = streamToBytes(cis, (int) (file.length() - cis.bytesRead));
             return entry.toCacheEntry(data);
