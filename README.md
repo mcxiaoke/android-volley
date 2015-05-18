@@ -7,7 +7,7 @@ This is an unofficial mirror for [android volley library](https://android.google
 
 Volley is already published to Maven Central.  
 
-* [![Maven Central](http://img.shields.io/badge/2015.03.18-com.mcxiaoke.volley:library:1.0.15-brightgreen.svg)](http://search.maven.org/#artifactdetails%7Ccom.mcxiaoke.volley%7Clibrary%7C1.0.15%7Cjar) 
+* [![Maven Central](http://img.shields.io/badge/2015.05.18-com.mcxiaoke.volley:library:1.0.16-brightgreen.svg)](http://search.maven.org/#artifactdetails%7Ccom.mcxiaoke.volley%7Clibrary%7C1.0.16%7Cjar) 
 
 
 ## Usage
@@ -33,6 +33,10 @@ compile 'com.mcxiaoke.volley:library:1.0.+@aar'
 
 
 ## History
+
+* **1.0.16 2015.05.18**
+    * merge pr, fix NegativeArraySizeException
+    * merge upstream, Use a BufferedOutputStream to read and write cache
     
 * **1.0.15 2015.03.18**
     * add two missing constructors for JsonArrayRequest and JsonObjectRequest
