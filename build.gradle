@@ -5,21 +5,29 @@
 // Any other changes to the build config belong in rules.gradle, which
 // is used by projects that depend on Volley but define their own
 // tools versions across all dependencies to ensure a consistent build.
+//
+// Most users should just add this line to settings.gradle:
+//     include(":volley")
+//
+// If you have a more complicated Gradle setup you can choose to use
+// this instead:
+//     include(":volley")
+//     project(':volley').buildFileName = 'rules.gradle'
 
 buildscript {
     repositories {
-        mavenCentral()
+        jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.14.+'
+        classpath 'com.android.tools.build:gradle:1.2.3'
     }
 }
 
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion = '21.1.0'
+    compileSdkVersion 22
+    buildToolsVersion = '22.0.1'
 }
 
 apply from: 'rules.gradle'
