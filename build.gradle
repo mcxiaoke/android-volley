@@ -44,6 +44,10 @@ android {
         quiet true
         abortOnError false
     }
+
+    packagingOptions {
+        exclude 'LICENSE.txt'
+    }
 }
 
 apply from: 'https://raw.github.com/mcxiaoke/gradle-mvn-push/master/jar.gradle'
