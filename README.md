@@ -32,7 +32,7 @@ compile 'com.mcxiaoke.volley:library:1.0.17'
 
 ## History
 
-* **1.0.17** 2015.07.13**
+* **1.0.17 2015.07.13**
     * merge upstream, stop logging slow requests outside of debug logs
     * merge pr #64, fix leaking the last request object
     
