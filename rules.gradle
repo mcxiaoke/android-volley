@@ -1,0 +1,3 @@
+// See build.gradle for an explanation of what this file is.
+
+apply plugin: 'com.android.library'
