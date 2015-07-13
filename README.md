@@ -7,7 +7,7 @@ This is an unofficial mirror for [android volley library](https://android.google
 
 Volley is already published to Maven Central.  
 
-* [![Maven Central](http://img.shields.io/badge/2015.05.18-com.mcxiaoke.volley:library:1.0.16-brightgreen.svg)](http://search.maven.org/#artifactdetails%7Ccom.mcxiaoke.volley%7Clibrary%7C1.0.16%7Cjar) 
+* [![Maven Central](http://img.shields.io/badge/2015.07.13-com.mcxiaoke.volley:library:1.0.17-brightgreen.svg)](http://search.maven.org/#artifactdetails%7Ccom.mcxiaoke.volley%7Clibrary%7C1.0.17%7Cjar) 
 
 
 ## Usage
@@ -26,14 +26,16 @@ Volley is already published to Maven Central.
 ### for Gradle
 
 ```
-compile 'com.mcxiaoke.volley:library:1.0.+'
-// or 
-compile 'com.mcxiaoke.volley:library:1.0.+@aar'
+compile 'com.mcxiaoke.volley:library:1.0.17'
 ```
 
 
 ## History
 
+* **1.0.17** 2015.07.13**
+    * merge upstream, stop logging slow requests outside of debug logs
+    * merge pr #64, fix leaking the last request object
+    
 * **1.0.16 2015.05.18**
     * merge pr, fix NegativeArraySizeException
     * merge upstream, Use a BufferedOutputStream to read and write cache
