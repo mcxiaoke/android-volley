@@ -1,6 +1,6 @@
 Android Volley  
 ----------
-This is an unofficial mirror for [android volley library](https://android.googlesource.com/platform/frameworks/volley), the source code will synchronize periodically with the official volley repository.
+This is an unofficial mirror (with changes) for [android volley library](https://android.googlesource.com/platform/frameworks/volley), the source code will synchronize periodically with the official volley repository.
 
 
 ## Status
