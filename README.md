@@ -1,6 +1,6 @@
 Android Volley  
 ----------
-This is an unofficial mirror for [android volley library](https://android.googlesource.com/platform/frameworks/volley), the source code will synchronize periodically with the official volley repository.
+This is an unofficial mirror (with some minor bugfix, see [Changelog](#changelog) for details.) for [android volley library](https://android.googlesource.com/platform/frameworks/volley), the source code will synchronize periodically with the official volley repository.
 
 
 ## Status
@@ -30,7 +30,7 @@ compile 'com.mcxiaoke.volley:library:1.0.17'
 ```
 
 
-## History
+## Changelog
 
 * **1.0.17 2015.07.13**
     * merge upstream, stop logging slow requests outside of debug logs
