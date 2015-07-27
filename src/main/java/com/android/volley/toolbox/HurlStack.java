@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,7 +59,7 @@ public class HurlStack implements HttpStack {
          * Returns a URL to use instead of the provided one, or null to indicate
          * this URL should not be used at all.
          */
-        public String rewriteUrl(String originalUrl);
+        String rewriteUrl(String originalUrl);
     }
 
     private final UrlRewriter mUrlRewriter;
@@ -115,19 +116,33 @@ public class HurlStack implements HttpStack {
         StatusLine responseStatus = new BasicStatusLine(protocolVersion,
                 connection.getResponseCode(), connection.getResponseMessage());
         BasicHttpResponse response = new BasicHttpResponse(responseStatus);
+        response.setHeaders(headersFromHeaderFields(connection.getHeaderFields()));
         response.setEntity(entityFromConnection(connection));
-        for (Entry<String, List<String>> header : connection.getHeaderFields().entrySet()) {
-            if (header.getKey() != null) {
-                Header h = new BasicHeader(header.getKey(), header.getValue().get(0));
-                response.addHeader(h);
+        return response;
+    }
+
+    private Header[] headersFromHeaderFields(Map<String, List<String>> headerFields) {
+        List<Header> headersList = new ArrayList<Header>();
+        for (Entry<String, List<String>> headerField : headerFields.entrySet()) {
+            headersList.addAll(headersFromHeaderField(headerField));
+        }
+        return headersList.toArray(new Header[headersList.size()]);
+    }
+
+    private List<Header> headersFromHeaderField(Entry<String, List<String>> headerField) {
+        List<Header> headers = new ArrayList<Header>();
+        String headerName = headerField.getKey();
+        if (headerName != null) {
+            for (String headerValue : headerField.getValue()) {
+                headers.add(new BasicHeader(headerName, headerValue));
             }
         }
-        return response;
+        return headers;
     }
 
     /**
      * Initializes an {@link HttpEntity} from the given {@link HttpURLConnection}.
-     * @param connection
+     * @param connection the connection where the HttpEntity gets created from
      * @return an HttpEntity populated with data from <code>connection</code>.
      */
     private static HttpEntity entityFromConnection(HttpURLConnection connection) {
@@ -154,7 +169,7 @@ public class HurlStack implements HttpStack {
 
     /**
      * Opens an {@link HttpURLConnection} with parameters.
-     * @param url
+     * @param url the url to which the connection should be opened
      * @return an open connection
      * @throws IOException
      */

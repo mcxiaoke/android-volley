@@ -56,9 +56,9 @@ import java.util.TreeMap;
 public class BasicNetwork implements Network {
     protected static final boolean DEBUG = VolleyLog.DEBUG;
 
-    private static int SLOW_REQUEST_THRESHOLD_MS = 3000;
+    private static final int SLOW_REQUEST_THRESHOLD_MS = 3000;
 
-    private static int DEFAULT_POOL_SIZE = 4096;
+    private static final int DEFAULT_POOL_SIZE = 4096;
 
     protected final HttpStack mHttpStack;
 
@@ -149,8 +149,8 @@ public class BasicNetwork implements Network {
             } catch (MalformedURLException e) {
                 throw new RuntimeException("Bad URL " + request.getUrl(), e);
             } catch (IOException e) {
-                int statusCode = 0;
-                NetworkResponse networkResponse = null;
+                int statusCode;
+                NetworkResponse networkResponse;
                 if (httpResponse != null) {
                     statusCode = httpResponse.getStatusLine().getStatusCode();
                 } else {
@@ -178,7 +178,7 @@ public class BasicNetwork implements Network {
                         throw new ServerError(networkResponse);
                     }
                 } else {
-                    throw new NetworkError(networkResponse);
+                    throw new NetworkError();
                 }
             }
         }
@@ -273,8 +273,13 @@ public class BasicNetwork implements Network {
      */
     protected static Map<String, String> convertHeaders(Header[] headers) {
         Map<String, String> result = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
-        for (int i = 0; i < headers.length; i++) {
-            result.put(headers[i].getName(), headers[i].getValue());
+        for (Header header : headers) {
+            String value = result.get(header.getName());
+            if (value == null) {
+                result.put(header.getName(), header.getValue());
+            } else {
+                result.put(header.getName(), value + ", " + header.getValue());
+            }
         }
         return result;
     }
