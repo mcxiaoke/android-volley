@@ -18,13 +18,16 @@ package com.android.volley;
 
 import org.apache.http.HttpStatus;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
 
 /**
  * Data and headers returned from {@link Network#performRequest(Request)}.
  */
-public class NetworkResponse {
+public class NetworkResponse implements Serializable{
+    private static final long serialVersionUID = -20150728102000L;
+
     /**
      * Creates a new network response.
      * @param statusCode the HTTP status code
