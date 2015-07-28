@@ -7,7 +7,7 @@ This is an unofficial mirror (with some minor bugfix, see [Changelog](#changelog
 
 Volley is already published to Maven Central.  
 
-* [![Maven Central](http://img.shields.io/badge/2015.07.28-com.mcxiaoke.volley:library:1.0.18-brightgreen.svg)](http://search.maven.org/#artifactdetails%7Ccom.mcxiaoke.volley%7Clibrary%7C1.0.17%7Cjar)
+* [![Maven Central](http://img.shields.io/badge/2015.07.28-com.mcxiaoke.volley:library:1.0.18-brightgreen.svg)](http://search.maven.org/#artifactdetails%7Ccom.mcxiaoke.volley%7Clibrary%7C1.0.18%7Cjar)
 
 
 ## Usage
@@ -52,7 +52,7 @@ compile 'com.mcxiaoke.volley:library:1.0.18-SNAPSHOT'
     * merge upstream, process response bodies only when present
     * tweak getCacheKey(), using method and original url, fix #67 #78
     * add RedirectError, wrong exception for http 301 and 302, fix #51
-    * make make NetworkResponse Serializable, fix #53
+    * make NetworkResponse Serializable, fix #53
     * create NetworkError using IOException, not using null response
 
 * **1.0.17 2015.07.13**
