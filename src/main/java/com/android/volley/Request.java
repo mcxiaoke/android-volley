@@ -20,9 +20,7 @@ import android.net.TrafficStats;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.SystemClock;
 import android.text.TextUtils;
-
 import com.android.volley.VolleyLog.MarkerLog;
 
 import java.io.UnsupportedEncodingException;
@@ -306,7 +304,7 @@ public abstract class Request<T> implements Comparable<Request<T>> {
      * Returns the cache key for this request.  By default, this is the URL.
      */
     public String getCacheKey() {
-        return getOriginUrl();
+        return mMethod + ":" + mUrl;
     }
 
     /**
