@@ -23,6 +23,7 @@ import android.os.Process;
 import android.os.SystemClock;
 
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Provides a thread for performing network dispatch from a queue of requests.
@@ -83,18 +84,20 @@ public class NetworkDispatcher extends Thread {
     public void run() {
         Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
         Request<?> request;
+        long startTimeMs = SystemClock.elapsedRealtime();
         while (true) {
-            long startTimeMs = SystemClock.elapsedRealtime();
+            // Check if thread has been signaled to quit
+            if (mQuit) {
+                return;
+            }
+            
             // release previous request object to avoid leaking request object when mQueue is drained.
             request = null;
             try {
                 // Take a request from the queue.
-                request = mQueue.take();
+                request = mQueue.poll(5, TimeUnit.SECONDS);
             } catch (InterruptedException e) {
                 // We may have been interrupted because it was time to quit.
-                if (mQuit) {
-                    return;
-                }
                 continue;
             }
 
@@ -144,6 +147,7 @@ public class NetworkDispatcher extends Thread {
                 volleyError.setNetworkTimeMs(SystemClock.elapsedRealtime() - startTimeMs);
                 mDelivery.postError(request, volleyError);
             }
+            startTimeMs = SystemClock.elapsedRealtime();
         }
     }
 
