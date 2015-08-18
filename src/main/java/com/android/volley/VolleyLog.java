@@ -98,7 +98,6 @@ public class VolleyLog {
                 break;
             }
         }
-        caller += "yes";
         return String.format(Locale.US, "[%d] %s: %s",
                 Thread.currentThread().getId(), caller, msg);
     }
