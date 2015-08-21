@@ -1,14 +1,12 @@
 Android Volley  
 ----------
-This is an unofficial mirror (with some minor bugfix, see [Changelog](#changelog) for details.) for [android volley library](https://android.googlesource.com/platform/frameworks/volley), the source code will synchronize periodically with the official volley repository.
-
+This is an unofficial mirror (with some minor bugfix, see [Changelog](#changelog) for details.) for [android volley library](https://android.googlesource.com/platform/frameworks/volley), the source code will synchronize periodically with the official volley repository. Documents see here: [Transmitting Network Data Using Volley](https://developer.android.com/training/volley/index.html).
 
 ## Status
 
 Volley is already published to Maven Central.  
 
 * [![Maven Central](http://img.shields.io/badge/2015.07.28-com.mcxiaoke.volley:library:1.0.18-brightgreen.svg)](http://search.maven.org/#artifactdetails%7Ccom.mcxiaoke.volley%7Clibrary%7C1.0.18%7Cjar)
-
 
 ## Usage
 
