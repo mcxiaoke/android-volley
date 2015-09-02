@@ -1,20 +1,18 @@
 Android Volley  
 ----------
-This is an unofficial mirror for [android volley library](https://android.googlesource.com/platform/frameworks/volley), the source code will synchronize periodically with the official volley repository.
-
+This is an unofficial mirror (with some minor bugfix, see [Changelog](#changelog) for details.) for [android volley library](https://android.googlesource.com/platform/frameworks/volley), the source code will synchronize periodically with the official volley repository. Documents see here: [Transmitting Network Data Using Volley](https://developer.android.com/training/volley/index.html).
 
 ## Status
 
 Volley is already published to Maven Central.  
 
-* [![Maven Central](http://img.shields.io/badge/2015.07.13-com.mcxiaoke.volley:library:1.0.17-brightgreen.svg)](http://search.maven.org/#artifactdetails%7Ccom.mcxiaoke.volley%7Clibrary%7C1.0.17%7Cjar) 
-
+* [![Maven Central](http://img.shields.io/badge/2015.07.28-com.mcxiaoke.volley:library:1.0.18-brightgreen.svg)](http://search.maven.org/#artifactdetails%7Ccom.mcxiaoke.volley%7Clibrary%7C1.0.18%7Cjar)
 
 ## Usage
 
 ### for Maven
 
-```
+``` xml
 <dependency>
     <groupId>com.mcxiaoke.volley</groupId>
     <artifactId>library</artifactId>
@@ -25,18 +23,42 @@ Volley is already published to Maven Central.
 
 ### for Gradle
 
-```
-compile 'com.mcxiaoke.volley:library:1.0.17'
+``` groovy
+compile 'com.mcxiaoke.volley:library:1.0.18'
 ```
 
 
-## History
+### Using SNAPSHOT
+
+add this to repositories section in build.gradle
+
+``` groovy
+repositories {
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+    }
+```
+
+add this to dependencies section in build.gradle
+
+```groovy
+compile 'com.mcxiaoke.volley:library:1.0.18-SNAPSHOT'
+```
+
+## Changelog
+
+* **1.0.18 2015.07.28**
+    * merge upstream, process response bodies only when present
+    * tweak getCacheKey(), using method and original url, fix #67 #78
+    * add RedirectError, wrong exception for http 301 and 302, fix #51
+    * make NetworkResponse Serializable, fix #53
+    * create NetworkError using IOException, not using null response
 
 * **1.0.17 2015.07.13**
     * merge upstream, stop logging slow requests outside of debug logs
     * merge pr #64, fix leaking the last request object
     
 * **1.0.16 2015.05.18**
+    * fix duplicate retry, change DEFAULT_MAX_RETRIES to 0
     * merge pr, fix NegativeArraySizeException
     * merge upstream, Use a BufferedOutputStream to read and write cache
     

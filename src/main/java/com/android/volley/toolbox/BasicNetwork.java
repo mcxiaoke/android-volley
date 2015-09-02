@@ -25,6 +25,7 @@ import com.android.volley.Network;
 import com.android.volley.NetworkError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.NoConnectionError;
+import com.android.volley.RedirectError;
 import com.android.volley.Request;
 import com.android.volley.RetryPolicy;
 import com.android.volley.ServerError;
@@ -172,13 +173,13 @@ public class BasicNetwork implements Network {
                     } else if (statusCode == HttpStatus.SC_MOVED_PERMANENTLY || 
                     			statusCode == HttpStatus.SC_MOVED_TEMPORARILY) {
                         attemptRetryOnException("redirect",
-                                request, new AuthFailureError(networkResponse));
+                                request, new RedirectError(networkResponse));
                     } else {
                         // TODO: Only throw ServerError for 5xx status codes.
                         throw new ServerError(networkResponse);
                     }
                 } else {
-                    throw new NetworkError(networkResponse);
+                    throw new NetworkError(e);
                 }
             }
         }
