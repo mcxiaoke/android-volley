@@ -12,7 +12,7 @@ Volley is already published to Maven Central.
 
 ### for Maven
 
-```
+``` xml
 <dependency>
     <groupId>com.mcxiaoke.volley</groupId>
     <artifactId>library</artifactId>
@@ -23,7 +23,7 @@ Volley is already published to Maven Central.
 
 ### for Gradle
 
-```
+``` groovy
 compile 'com.mcxiaoke.volley:library:1.0.18'
 ```
 
@@ -32,7 +32,7 @@ compile 'com.mcxiaoke.volley:library:1.0.18'
 
 add this to repositories section in build.gradle
 
-```
+``` groovy
 repositories {
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
     }
@@ -40,7 +40,7 @@ repositories {
 
 add this to dependencies section in build.gradle
 
-```
+```groovy
 compile 'com.mcxiaoke.volley:library:1.0.18-SNAPSHOT'
 ```
 
