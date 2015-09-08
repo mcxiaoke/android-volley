@@ -39,7 +39,7 @@ public abstract class JsonRequest<T> extends Request<T> {
     private static final String PROTOCOL_CONTENT_TYPE =
         String.format("application/json; charset=%s", PROTOCOL_CHARSET);
 
-    private final Listener<T> mListener;
+    private Listener<T> mListener;
     private final String mRequestBody;
 
     /**
@@ -58,6 +58,12 @@ public abstract class JsonRequest<T> extends Request<T> {
         super(method, url, errorListener);
         mListener = listener;
         mRequestBody = requestBody;
+    }
+
+    @Override
+    protected void onFinish() {
+        super.onFinish();
+        mListener = null;
     }
 
     @Override

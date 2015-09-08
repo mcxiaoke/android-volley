@@ -66,7 +66,7 @@ public abstract class Request<T> implements Comparable<Request<T>> {
 
     /** URL of this request. */
     private final String mUrl;
-    
+
     /** The redirect url to use for 3xx http responses */
     private String mRedirectUrl;
 
@@ -77,7 +77,7 @@ public abstract class Request<T> implements Comparable<Request<T>> {
     private final int mDefaultTrafficStatsTag;
 
     /** Listener interface for errors. */
-    private final Response.ErrorListener mErrorListener;
+    private Response.ErrorListener mErrorListener;
 
     /** Sequence number of this request, used to enforce FIFO ordering. */
     private Integer mSequence;
@@ -219,6 +219,7 @@ public abstract class Request<T> implements Comparable<Request<T>> {
     void finish(final String tag) {
         if (mRequestQueue != null) {
             mRequestQueue.finish(this);
+            onFinish();
         }
         if (MarkerLog.ENABLED) {
             final long threadId = Thread.currentThread().getId();
@@ -239,6 +240,13 @@ public abstract class Request<T> implements Comparable<Request<T>> {
             mEventLog.add(tag, threadId);
             mEventLog.finish(this.toString());
         }
+    }
+
+    /**
+     * clear listeners when finished
+     */
+    protected void onFinish() {
+        mErrorListener = null;
     }
 
     /**
@@ -278,7 +286,7 @@ public abstract class Request<T> implements Comparable<Request<T>> {
     public String getUrl() {
         return (mRedirectUrl != null) ? mRedirectUrl : mUrl;
     }
-    
+
     /**
      * Returns the URL of the request before any redirects have occurred.
      */
@@ -292,7 +300,7 @@ public abstract class Request<T> implements Comparable<Request<T>> {
     public String getIdentifier() {
         return mIdentifier;
     }
-    
+
     /**
      * Sets the redirect url to handle 3xx http responses.
      */
