@@ -6,7 +6,7 @@ This is an unofficial mirror (with some minor bugfix, see [Changelog](#changelog
 
 Volley is already published to Maven Central.  
 
-* [![Maven Central](http://img.shields.io/badge/2015.07.28-com.mcxiaoke.volley:library:1.0.18-brightgreen.svg)](http://search.maven.org/#artifactdetails%7Ccom.mcxiaoke.volley%7Clibrary%7C1.0.18%7Cjar)
+* [![Maven Central](http://img.shields.io/badge/2015.09.08-com.mcxiaoke.volley:library:1.0.19-brightgreen.svg)](http://search.maven.org/#artifactdetails%7Ccom.mcxiaoke.volley%7Clibrary%7C1.0.19%7Cjar)
 
 ## Usage
 
@@ -16,7 +16,7 @@ Volley is already published to Maven Central.
 <dependency>
     <groupId>com.mcxiaoke.volley</groupId>
     <artifactId>library</artifactId>
-    <version>{latest-version}</version>
+    <version>1.0.19</version>
 </dependency>
 ```
 
@@ -24,7 +24,7 @@ Volley is already published to Maven Central.
 ### for Gradle
 
 ``` groovy
-compile 'com.mcxiaoke.volley:library:1.0.18'
+compile 'com.mcxiaoke.volley:library:1.0.19'
 ```
 
 
@@ -41,10 +41,13 @@ repositories {
 add this to dependencies section in build.gradle
 
 ```groovy
-compile 'com.mcxiaoke.volley:library:1.0.18-SNAPSHOT'
+compile 'com.mcxiaoke.volley:library:1.0.19-SNAPSHOT'
 ```
 
 ## Changelog
+* **1.0.19 2015.09.08**
+    * merge pr, fix request leak in CacheDispatcher
+    * set mListener and mErrorListener to null when finish request, fix #85 #93 #96
 
 * **1.0.18 2015.07.28**
     * merge upstream, process response bodies only when present
