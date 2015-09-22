@@ -209,7 +209,7 @@ public class BasicNetwork implements Network {
         int oldTimeout = request.getTimeoutMs();
 
         try {
-            retryPolicy.retry(exception);
+            retryPolicy.retry(exception, request);
         } catch (VolleyError e) {
             request.addMarker(
                     String.format("%s-timeout-giveup [timeout=%s]", logPrefix, oldTimeout));
