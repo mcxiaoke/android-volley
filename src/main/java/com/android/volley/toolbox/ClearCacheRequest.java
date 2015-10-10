@@ -25,7 +25,7 @@ import android.os.Handler;
 import android.os.Looper;
 
 /**
- * A synthetic request used for clearing the cache.
+ * A synthetic(合成的,假的) request used for clearing the cache.
  */
 public class ClearCacheRequest extends Request<Object> {
     private final Cache mCache;

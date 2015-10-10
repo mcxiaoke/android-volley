@@ -31,6 +31,8 @@ import java.util.Map;
 /**
  * Base class for all network requests.
  *
+ * 所有的网络请求类都从此类继承而来
+ *
  * @param <T> The type of parsed response this request expects.
  */
 public abstract class Request<T> implements Comparable<Request<T>> {
@@ -42,6 +44,7 @@ public abstract class Request<T> implements Comparable<Request<T>> {
 
     /**
      * Supported request methods.
+     * 包含了所有的请求种类
      */
     public interface Method {
         int DEPRECATED_GET_OR_POST = -1;
@@ -68,10 +71,10 @@ public abstract class Request<T> implements Comparable<Request<T>> {
     private final String mUrl;
 
     /** The redirect url to use for 3xx http responses */
-    private String mRedirectUrl;
+    private String mRedirectUrl; //重新调配的Url
 
     /** The unique identifier of the request */
-    private String mIdentifier;
+    private String mIdentifier; //标识，识别。
 
     /** Default tag for {@link TrafficStats}. */
     private final int mDefaultTrafficStatsTag;
@@ -83,7 +86,7 @@ public abstract class Request<T> implements Comparable<Request<T>> {
     private Integer mSequence;
 
     /** The request queue this request is associated with. */
-    private RequestQueue mRequestQueue;
+    private RequestQueue mRequestQueue; //当前请求关联的RequestQueue
 
     /** Whether or not responses to this request should be cached. */
     private boolean mShouldCache = true;
@@ -563,6 +566,8 @@ public abstract class Request<T> implements Comparable<Request<T>> {
      * if you return null.
      * @param response Response from the network
      * @return The parsed response, or null in the case of an error
+     *
+     * 这个方法接收到了真正返回的东西,在两个dispatcher中都调用了这个方法.
      */
     abstract protected Response<T> parseNetworkResponse(NetworkResponse response);
 
@@ -584,6 +589,10 @@ public abstract class Request<T> implements Comparable<Request<T>> {
      * be non-null; responses that fail to parse are not delivered.
      * @param response The parsed response returned by
      * {@link #parseNetworkResponse(NetworkResponse)}
+     *
+     * 这个方法很重要,在实现Request的时候会传入一个Response.Listener接口,必须实现onResponse方法,在这个方法里边就获取到了返回数据.
+     *                 这个抽象方法就实现了接口的onResponse方法.
+     *                 这个方法在某个线程中被触发了.   触发之后调用接口的onRespose方法,然后就获取到了请求的数据.Error也是一样的.
      */
     abstract protected void deliverResponse(T response);
 
