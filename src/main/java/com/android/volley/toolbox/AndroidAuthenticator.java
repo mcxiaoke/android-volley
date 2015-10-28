@@ -73,6 +73,13 @@ public class AndroidAuthenticator implements Authenticator {
         return mAccount;
     }
 
+    /**
+     * Returns the Auth Token Type used by this authenticator.
+     */
+    public String getAuthTokenType() {
+        return mAuthTokenType;
+    }
+
     // TODO: Figure out what to do about notifyAuthFailure
     @SuppressWarnings("deprecation")
     @Override
