@@ -133,6 +133,24 @@ compile 'com.mcxiaoke.volley:library:1.0.19-SNAPSHOT'
 
 This project is just a mirror of volley, if you have found any bugs or need some features, please create an issue at [AOSP Issue Tracker](https://code.google.com/p/android/issues/list).
 
+## About
+
+#### Contacts
+
+* Blog: <http://blog.mcxiaoke.com>
+* Github: <https://github.com/mcxiaoke>
+* Email: [github@mcxiaoke.com](mailto:github@mcxiaoke.com)
+
+#### Projects
+
+* Android-Next: <https://github.com/mcxiaoke/Android-Next>
+* Packer-Ng: <https://github.com/mcxiaoke/packer-ng-plugin>
+* Gradle-Packer: <https://github.com/mcxiaoke/gradle-packer-plugin>
+* xBus: <https://github.com/mcxiaoke/xBus>
+* RxJava Docs: <https://github.com/mcxiaoke/RxDocs>
+* MQTT-CN: <https://github.com/mcxiaoke/mqtt>
+* Minicat App: <https://github.com/mcxiaoke/minicat>
+* Fanfou App: <https://github.com/mcxiaoke/fanfouapp-opensource>
 
 ## License
 
