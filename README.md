@@ -143,6 +143,8 @@ This project is just a mirror of volley, if you have found any bugs or need some
 
 #### Projects
 
+* Awesome-Kotlin:<https://github.com/mcxiaoke/awesome-kotlin>
+* Kotlin-Koi:<https://github.com/mcxiaoke/kotlin-koi>
 * Android-Next: <https://github.com/mcxiaoke/Android-Next>
 * Packer-Ng: <https://github.com/mcxiaoke/packer-ng-plugin>
 * Gradle-Packer: <https://github.com/mcxiaoke/gradle-packer-plugin>
@@ -155,7 +157,7 @@ This project is just a mirror of volley, if you have found any bugs or need some
 ## License
 
 
-    Copyright (C) 2014 Xiaoke Zhang
+    Copyright (C) 2014,2015,2016 Xiaoke Zhang
     Copyright (C) 2011 The Android Open Source Project
 
     Licensed under the Apache License, Version 2.0 (the "License");
