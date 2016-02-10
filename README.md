@@ -45,6 +45,9 @@ compile 'com.mcxiaoke.volley:library:1.0.19-SNAPSHOT'
 ```
 
 ## Changelog
+* ** 1.0.19.1 2015.10.31
+    * support alibaba fast json
+
 * **1.0.19 2015.09.08**
     * merge pr, fix request leak in CacheDispatcher
     * set mListener and mErrorListener to null when finish request, fix #85 #93 #96

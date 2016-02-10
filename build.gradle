@@ -23,6 +23,23 @@ buildscript {
     }
 }
 
+//定义一个函数，target是生成jar包的文件名，classDir是class文件所在的文件夹
+def makeJar(String target,String classDir){
+    exec{
+        executable "C:\\Program Files\\Java\\jdk1.8.0_05\\bin\\jar "
+        args "cvf",target
+        args "-C", classDir
+        args "","."
+
+
+    }
+}
+
+//新建一个task,名为buildLib,依赖build(build是一个自带的task)
+task buildLib(dependsOn:['build'])<<{
+    makeJar("volley.jar","build/intermediates/classes/release")
+}
+
 apply plugin: 'com.android.library'
 
 allprojects {
@@ -42,8 +59,9 @@ dependencies {
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.0'
     androidTestCompile 'com.android.support.test:testing-support-lib:0.1'
     testCompile 'junit:junit:4.12'
-    testCompile "org.mockito:mockito-core:1.9.5"
+    testCompile 'org.mockito:mockito-core:1.9.5'
     testCompile 'org.robolectric:robolectric:2.4'
+    compile 'com.alibaba:fastjson:1.2.7'
 }
 
 
