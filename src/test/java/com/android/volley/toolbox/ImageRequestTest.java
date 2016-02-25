@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Response;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
@@ -168,5 +169,8 @@ public class ImageRequestTest {
         assertNotNull(ImageRequest.class.getConstructor(String.class, Response.Listener.class,
                 int.class, int.class, ImageView.ScaleType.class, Bitmap.Config.class,
                 Response.ErrorListener.class));
+        assertEquals(ImageRequest.DEFAULT_IMAGE_TIMEOUT_MS, 1000);
+        assertEquals(ImageRequest.DEFAULT_IMAGE_MAX_RETRIES, 2);
+        assertEquals(ImageRequest.DEFAULT_IMAGE_BACKOFF_MULT, 2f);
     }
 }
