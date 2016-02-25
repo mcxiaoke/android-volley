@@ -16,12 +16,11 @@
 
 package com.android.volley.toolbox;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 public class ByteArrayPoolTest {
     @Test public void reusesBuffer() {

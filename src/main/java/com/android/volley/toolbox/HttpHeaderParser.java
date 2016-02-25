@@ -17,18 +17,20 @@
 package com.android.volley.toolbox;
 
 import com.android.volley.Cache;
+import com.android.volley.InternalUtils;
 import com.android.volley.NetworkResponse;
 
-import org.apache.http.impl.cookie.DateParseException;
-import org.apache.http.impl.cookie.DateUtils;
-import org.apache.http.protocol.HTTP;
-
+import java.util.Date;
 import java.util.Map;
 
 /**
  * Utility methods for parsing HTTP headers.
  */
 public class HttpHeaderParser {
+
+    public static final String CONTENT_TYPE = "Content-Type";
+
+    public static final String DEFAULT_CONTENT_CHARSET = "ISO-8859-1";
 
     /**
      * Extracts a {@link Cache.Entry} from a {@link NetworkResponse}.
@@ -126,9 +128,10 @@ public class HttpHeaderParser {
     public static long parseDateAsEpoch(String dateStr) {
         try {
             // Parse date in RFC1123 format if this header contains one
-            return DateUtils.parseDate(dateStr).getTime();
-        } catch (DateParseException e) {
-            // Date in invalid format, fallback to 0
+            Date date = InternalUtils.parseDate(dateStr);
+            if (date == null) return 0;
+            return date.getTime();
+        } catch (Exception e) {
             return 0;
         }
     }
@@ -142,7 +145,7 @@ public class HttpHeaderParser {
      * or the defaultCharset if none can be found.
      */
     public static String parseCharset(Map<String, String> headers, String defaultCharset) {
-        String contentType = headers.get(HTTP.CONTENT_TYPE);
+        String contentType = headers.get(CONTENT_TYPE);
         if (contentType != null) {
             String[] params = contentType.split(";");
             for (int i = 1; i < params.length; i++) {
@@ -163,6 +166,6 @@ public class HttpHeaderParser {
      * or the HTTP default (ISO-8859-1) if none can be found.
      */
     public static String parseCharset(Map<String, String> headers) {
-        return parseCharset(headers, HTTP.DEFAULT_CONTENT_CHARSET);
+        return parseCharset(headers, DEFAULT_CONTENT_CHARSET);
     }
 }

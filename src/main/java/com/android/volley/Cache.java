@@ -16,8 +16,8 @@
 
 package com.android.volley;
 
-import java.util.Collections;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * An interface for a cache keyed by a String with a byte array as data.
@@ -84,7 +84,7 @@ public interface Cache {
         public long softTtl;
 
         /** Immutable response headers as received from server; must be non-null. */
-        public Map<String, String> responseHeaders = Collections.emptyMap();
+        public Map<String, String> responseHeaders = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
 
         /** True if the entry is expired. */
         public boolean isExpired() {

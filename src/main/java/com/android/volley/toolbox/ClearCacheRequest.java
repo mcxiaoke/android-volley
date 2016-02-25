@@ -16,13 +16,13 @@
 
 package com.android.volley.toolbox;
 
+import android.os.Handler;
+import android.os.Looper;
+
 import com.android.volley.Cache;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
-
-import android.os.Handler;
-import android.os.Looper;
 
 /**
  * A synthetic request used for clearing the cache.

@@ -21,6 +21,7 @@ import android.os.SystemClock;
 import com.android.volley.AuthFailureError;
 import com.android.volley.Cache;
 import com.android.volley.Cache.Entry;
+import com.android.volley.InternalUtils;
 import com.android.volley.Network;
 import com.android.volley.NetworkError;
 import com.android.volley.NetworkResponse;
@@ -32,22 +33,16 @@ import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
+import com.android.volley.http.HttpEntity;
+import com.android.volley.http.HttpResponse;
 
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.StatusLine;
 import org.apache.http.conn.ConnectTimeoutException;
-import org.apache.http.impl.cookie.DateUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -89,22 +84,21 @@ public class BasicNetwork implements Network {
         while (true) {
             HttpResponse httpResponse = null;
             byte[] responseContents = null;
-            Map<String, String> responseHeaders = Collections.emptyMap();
+            Map<String, String> responseHeaders = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
             try {
                 // Gather headers.
-                Map<String, String> headers = new HashMap<String, String>();
+                Map<String, String> headers = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
                 addCacheHeaders(headers, request.getCacheEntry());
                 httpResponse = mHttpStack.performRequest(request, headers);
-                StatusLine statusLine = httpResponse.getStatusLine();
-                int statusCode = statusLine.getStatusCode();
+                responseHeaders.putAll(httpResponse.getAllHeaders());
+                int statusCode = httpResponse.getResponseCode();
 
-                responseHeaders = convertHeaders(httpResponse.getAllHeaders());
                 // Handle cache validation.
-                if (statusCode == HttpStatus.SC_NOT_MODIFIED) {
+                if (statusCode == HttpResponse.SC_NOT_MODIFIED) {
 
                     Entry entry = request.getCacheEntry();
                     if (entry == null) {
-                        return new NetworkResponse(HttpStatus.SC_NOT_MODIFIED, null,
+                        return new NetworkResponse(HttpResponse.SC_NOT_MODIFIED, null,
                                 responseHeaders, true,
                                 SystemClock.elapsedRealtime() - requestStart);
                     }
@@ -114,13 +108,13 @@ public class BasicNetwork implements Network {
                     // the new ones from the response.
                     // http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.3.5
                     entry.responseHeaders.putAll(responseHeaders);
-                    return new NetworkResponse(HttpStatus.SC_NOT_MODIFIED, entry.data,
+                    return new NetworkResponse(HttpResponse.SC_NOT_MODIFIED, entry.data,
                             entry.responseHeaders, true,
                             SystemClock.elapsedRealtime() - requestStart);
                 }
                 
                 // Handle moved resources
-                if (statusCode == HttpStatus.SC_MOVED_PERMANENTLY || statusCode == HttpStatus.SC_MOVED_TEMPORARILY) {
+                if (statusCode == HttpResponse.SC_MOVED_PERMANENTLY || statusCode == HttpResponse.SC_MOVED_TEMPORARILY) {
                 	String newUrl = responseHeaders.get("Location");
                 	request.setRedirectUrl(newUrl);
                 }
@@ -136,7 +130,7 @@ public class BasicNetwork implements Network {
 
                 // if the request is slow, log it.
                 long requestLifetime = SystemClock.elapsedRealtime() - requestStart;
-                logSlowRequests(requestLifetime, request, responseContents, statusLine);
+                logSlowRequests(requestLifetime, request, responseContents, httpResponse);
 
                 if (statusCode < 200 || statusCode > 299) {
                     throw new IOException();
@@ -153,12 +147,12 @@ public class BasicNetwork implements Network {
                 int statusCode = 0;
                 NetworkResponse networkResponse = null;
                 if (httpResponse != null) {
-                    statusCode = httpResponse.getStatusLine().getStatusCode();
+                    statusCode = httpResponse.getResponseCode();
                 } else {
                     throw new NoConnectionError(e);
                 }
-                if (statusCode == HttpStatus.SC_MOVED_PERMANENTLY || 
-                		statusCode == HttpStatus.SC_MOVED_TEMPORARILY) {
+                if (statusCode == HttpResponse.SC_MOVED_PERMANENTLY ||
+                		statusCode == HttpResponse.SC_MOVED_TEMPORARILY) {
                 	VolleyLog.e("Request at %s has been redirected to %s", request.getOriginUrl(), request.getUrl());
                 } else {
                 	VolleyLog.e("Unexpected response code %d for %s", statusCode, request.getUrl());
@@ -166,12 +160,12 @@ public class BasicNetwork implements Network {
                 if (responseContents != null) {
                     networkResponse = new NetworkResponse(statusCode, responseContents,
                             responseHeaders, false, SystemClock.elapsedRealtime() - requestStart);
-                    if (statusCode == HttpStatus.SC_UNAUTHORIZED ||
-                            statusCode == HttpStatus.SC_FORBIDDEN) {
+                    if (statusCode == HttpResponse.SC_UNAUTHORIZED ||
+                            statusCode == HttpResponse.SC_FORBIDDEN) {
                         attemptRetryOnException("auth",
                                 request, new AuthFailureError(networkResponse));
-                    } else if (statusCode == HttpStatus.SC_MOVED_PERMANENTLY || 
-                    			statusCode == HttpStatus.SC_MOVED_TEMPORARILY) {
+                    } else if (statusCode == HttpResponse.SC_MOVED_PERMANENTLY ||
+                    			statusCode == HttpResponse.SC_MOVED_TEMPORARILY) {
                         attemptRetryOnException("redirect",
                                 request, new RedirectError(networkResponse));
                     } else {
@@ -189,12 +183,12 @@ public class BasicNetwork implements Network {
      * Logs requests that took over SLOW_REQUEST_THRESHOLD_MS to complete.
      */
     private void logSlowRequests(long requestLifetime, Request<?> request,
-            byte[] responseContents, StatusLine statusLine) {
+            byte[] responseContents, HttpResponse response) {
         if (DEBUG || requestLifetime > SLOW_REQUEST_THRESHOLD_MS) {
             VolleyLog.d("HTTP response for request=<%s> [lifetime=%d], [size=%s], " +
                     "[rc=%d], [retryCount=%s]", request, requestLifetime,
                     responseContents != null ? responseContents.length : "null",
-                    statusLine.getStatusCode(), request.getRetryPolicy().getCurrentRetryCount());
+                    response.getResponseCode(), request.getRetryPolicy().getCurrentRetryCount());
         }
     }
 
@@ -230,7 +224,7 @@ public class BasicNetwork implements Network {
 
         if (entry.lastModified > 0) {
             Date refTime = new Date(entry.lastModified);
-            headers.put("If-Modified-Since", DateUtils.formatDate(refTime));
+            headers.put("If-Modified-Since", InternalUtils.formatDate(refTime));
         }
     }
 
@@ -259,7 +253,7 @@ public class BasicNetwork implements Network {
             try {
                 // Close the InputStream and release the resources by "consuming the content".
                 entity.consumeContent();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 // This can happen if there was an exception above that left the entity in
                 // an invalid state.
                 VolleyLog.v("Error occured when calling consumingContent");
@@ -267,16 +261,5 @@ public class BasicNetwork implements Network {
             mPool.returnBuf(buffer);
             bytes.close();
         }
-    }
-
-    /**
-     * Converts Headers[] to Map<String, String>.
-     */
-    protected static Map<String, String> convertHeaders(Header[] headers) {
-        Map<String, String> result = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
-        for (int i = 0; i < headers.length; i++) {
-            result.put(headers[i].getName(), headers[i].getValue());
-        }
-        return result;
     }
 }
