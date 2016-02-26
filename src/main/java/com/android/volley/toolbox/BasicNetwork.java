@@ -267,8 +267,8 @@ public class BasicNetwork implements Network {
             mPool.returnBuf(buffer);
             try {
                 bytes.close();
-            }catch (Exception e){
-                VolleyLog.v("Error occured when close PoolingByteArrayOutputStream");
+            }catch (IOException e){
+                VolleyLog.v("Error occured when closing PoolingByteArrayOutputStream");
             }
         }
     }
