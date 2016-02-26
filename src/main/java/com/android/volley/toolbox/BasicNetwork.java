@@ -265,7 +265,11 @@ public class BasicNetwork implements Network {
                 VolleyLog.v("Error occured when calling consumingContent");
             }
             mPool.returnBuf(buffer);
-            bytes.close();
+            try {
+                bytes.close();
+            }catch (Exception e){
+                VolleyLog.v("Error occured when close PoolingByteArrayOutputStream");
+            }
         }
     }
 
