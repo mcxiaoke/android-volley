@@ -1,10 +1,6 @@
 ## DEPRECATED
 
-### Please note, this project is deprecated and no longer being maintained, please use official version from jCenter.
-
-``` groovy
-compile 'com.android.volley:volley:1.0.0'
-```
+### Please note, this project is deprecated and no longer being maintained, please use official version [volley](https://github.com/google/volley).
 
 ----------
 
