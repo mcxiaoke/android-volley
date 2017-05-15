@@ -83,10 +83,14 @@ public class NetworkDispatcher extends Thread {
     public void run() {
         Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
         Request<?> request;
+        NetworkResponse networkResponse;
+        Response<?> response;
         while (true) {
             long startTimeMs = SystemClock.elapsedRealtime();
-            // release previous request object to avoid leaking request object when mQueue is drained.
+            // release previous tmp objects to avoid leaking these objects when mQueue is drained.
             request = null;
+            networkResponse = null;
+            response = null;
             try {
                 // Take a request from the queue.
                 request = mQueue.take();
@@ -111,7 +115,7 @@ public class NetworkDispatcher extends Thread {
                 addTrafficStatsTag(request);
 
                 // Perform the network request.
-                NetworkResponse networkResponse = mNetwork.performRequest(request);
+                networkResponse = mNetwork.performRequest(request);
                 request.addMarker("network-http-complete");
 
                 // If the server returned 304 AND we delivered a response already,
@@ -122,7 +126,7 @@ public class NetworkDispatcher extends Thread {
                 }
 
                 // Parse the response here on the worker thread.
-                Response<?> response = request.parseNetworkResponse(networkResponse);
+                response = request.parseNetworkResponse(networkResponse);
                 request.addMarker("network-parse-complete");
 
                 // Write to cache if applicable.
