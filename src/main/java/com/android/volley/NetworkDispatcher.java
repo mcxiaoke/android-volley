@@ -133,7 +133,6 @@ public class NetworkDispatcher extends Thread {
                 }
 
                 // Post the response back.
-                request.markDelivered();
                 mDelivery.postResponse(request, response);
             } catch (VolleyError volleyError) {
                 volleyError.setNetworkTimeMs(SystemClock.elapsedRealtime() - startTimeMs);
