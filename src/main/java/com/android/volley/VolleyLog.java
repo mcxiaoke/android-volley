@@ -88,8 +88,8 @@ public class VolleyLog {
         // Walk up the stack looking for the first caller outside of VolleyLog.
         // It will be at least two frames up, so start there.
         for (int i = 2; i < trace.length; i++) {
-            Class<?> clazz = trace[i].getClass();
-            if (!clazz.equals(VolleyLog.class)) {
+            String className = trace[i].getClassName();
+            if (!VolleyLog.class.getName().equals(className)) {
                 String callingClass = trace[i].getClassName();
                 callingClass = callingClass.substring(callingClass.lastIndexOf('.') + 1);
                 callingClass = callingClass.substring(callingClass.lastIndexOf('$') + 1);
