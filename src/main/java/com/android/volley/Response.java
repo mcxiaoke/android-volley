@@ -17,20 +17,20 @@
 package com.android.volley;
 
 /**
- * Encapsulates a parsed response for delivery.
+ * Encapsulates(包裹,胶囊) a parsed response for delivery.
  *
  * @param <T> Parsed type of this response
  */
 public class Response<T> {
 
     /** Callback interface for delivering parsed responses. */
-    public interface Listener<T> {
+    public interface Listener<T> {  //回调接口,在这里获取到了真正的返回数据T:String json image
         /** Called when a response is received. */
         public void onResponse(T response);
     }
 
     /** Callback interface for delivering error responses. */
-    public interface ErrorListener {
+    public interface ErrorListener {  //获取失败数据
         /**
          * Callback method that an error has been occurred with the
          * provided error code and optional user-readable message.
@@ -52,7 +52,7 @@ public class Response<T> {
     }
 
     /** Parsed response, or null in the case of error. */
-    public final T result;
+    public final T result;    //这里是真正的响应数据
 
     /** Cache metadata for this response, or null in the case of error. */
     public final Cache.Entry cacheEntry;
