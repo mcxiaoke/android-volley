@@ -30,8 +30,9 @@ import java.util.Map;
 
 /**
  * Base class for all network requests.
- *
+ * 所有网络请求的抽象基类
  * @param <T> The type of parsed response this request expects.
+ * 解析响应的请求类型
  */
 public abstract class Request<T> implements Comparable<Request<T>> {
 
