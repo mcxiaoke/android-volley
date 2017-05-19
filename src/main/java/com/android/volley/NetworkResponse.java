@@ -16,7 +16,7 @@
 
 package com.android.volley;
 
-import org.apache.http.HttpStatus;
+import com.android.volley.http.HttpResponse;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -51,11 +51,11 @@ public class NetworkResponse implements Serializable{
     }
 
     public NetworkResponse(byte[] data) {
-        this(HttpStatus.SC_OK, data, Collections.<String, String>emptyMap(), false, 0);
+        this(HttpResponse.SC_OK, data, Collections.<String, String>emptyMap(), false, 0);
     }
 
     public NetworkResponse(byte[] data, Map<String, String> headers) {
-        this(HttpStatus.SC_OK, data, headers, false, 0);
+        this(HttpResponse.SC_OK, data, headers, false, 0);
     }
 
     /** The HTTP status code. */

@@ -19,17 +19,8 @@ package com.android.volley.toolbox;
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Request.Method;
-
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.ProtocolVersion;
-import org.apache.http.StatusLine;
-import org.apache.http.entity.BasicHttpEntity;
-import org.apache.http.message.BasicHeader;
-import org.apache.http.message.BasicHttpResponse;
-import org.apache.http.message.BasicStatusLine;
+import com.android.volley.http.HttpEntity;
+import com.android.volley.http.HttpResponse;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -106,40 +97,20 @@ public class HurlStack implements HttpStack {
         }
         setConnectionParametersForRequest(connection, request);
         // Initialize HttpResponse with data from the HttpURLConnection.
-        ProtocolVersion protocolVersion = new ProtocolVersion("HTTP", 1, 1);
         int responseCode = connection.getResponseCode();
         if (responseCode == -1) {
             // -1 is returned by getResponseCode() if the response code could not be retrieved.
             // Signal to the caller that something was wrong with the connection.
             throw new IOException("Could not retrieve response code from HttpUrlConnection.");
         }
-        StatusLine responseStatus = new BasicStatusLine(protocolVersion,
-                connection.getResponseCode(), connection.getResponseMessage());
-        BasicHttpResponse response = new BasicHttpResponse(responseStatus);
-        if (hasResponseBody(request.getMethod(), responseStatus.getStatusCode())) {
-            response.setEntity(entityFromConnection(connection));
-        }
+        HttpResponse response = new HttpResponse(connection.getResponseCode(), connection.getResponseMessage());
+        response.setEntity(entityFromConnection(connection));
         for (Entry<String, List<String>> header : connection.getHeaderFields().entrySet()) {
             if (header.getKey() != null) {
-                Header h = new BasicHeader(header.getKey(), header.getValue().get(0));
-                response.addHeader(h);
+                response.addHeader(header.getKey(), header.getValue().get(0));
             }
         }
         return response;
-    }
-
-    /**
-     * Checks if a response message contains a body.
-     * @see <a href="https://tools.ietf.org/html/rfc7230#section-3.3">RFC 7230 section 3.3</a>
-     * @param requestMethod request method
-     * @param responseCode response status code
-     * @return whether the response has a body
-     */
-    private static boolean hasResponseBody(int requestMethod, int responseCode) {
-        return requestMethod != Request.Method.HEAD
-            && !(HttpStatus.SC_CONTINUE <= responseCode && responseCode < HttpStatus.SC_OK)
-            && responseCode != HttpStatus.SC_NO_CONTENT
-            && responseCode != HttpStatus.SC_NOT_MODIFIED;
     }
 
     /**
@@ -148,7 +119,7 @@ public class HurlStack implements HttpStack {
      * @return an HttpEntity populated with data from <code>connection</code>.
      */
     private static HttpEntity entityFromConnection(HttpURLConnection connection) {
-        BasicHttpEntity entity = new BasicHttpEntity();
+        HttpEntity entity = new HttpEntity();
         InputStream inputStream;
         try {
             inputStream = connection.getInputStream();
@@ -166,7 +137,14 @@ public class HurlStack implements HttpStack {
      * Create an {@link HttpURLConnection} for the specified {@code url}.
      */
     protected HttpURLConnection createConnection(URL url) throws IOException {
-        return (HttpURLConnection) url.openConnection();
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+        // Workaround for the M release HttpURLConnection not observing the
+        // HttpURLConnection.setFollowRedirects() property.
+        // https://code.google.com/p/android/issues/detail?id=194495
+        connection.setInstanceFollowRedirects(HttpURLConnection.getFollowRedirects());
+
+        return connection;
     }
 
     /**

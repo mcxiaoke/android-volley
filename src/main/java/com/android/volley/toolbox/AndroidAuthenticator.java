@@ -16,14 +16,14 @@
 
 package com.android.volley.toolbox;
 
-import com.android.volley.AuthFailureError;
-
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.AccountManagerFuture;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+
+import com.android.volley.AuthFailureError;
 
 /**
  * An Authenticator that uses {@link AccountManager} to get auth
@@ -71,6 +71,13 @@ public class AndroidAuthenticator implements Authenticator {
      */
     public Account getAccount() {
         return mAccount;
+    }
+
+    /**
+     * Returns the Auth Token Type used by this authenticator.
+     */
+    public String getAuthTokenType() {
+        return mAuthTokenType;
     }
 
     // TODO: Figure out what to do about notifyAuthFailure

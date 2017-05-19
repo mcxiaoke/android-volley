@@ -21,6 +21,7 @@ import com.android.volley.mock.MockNetwork;
 import com.android.volley.mock.MockRequest;
 import com.android.volley.mock.MockResponseDelivery;
 import com.android.volley.mock.WaitableQueue;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,7 +30,10 @@ import org.robolectric.RobolectricTestRunner;
 
 import java.util.Arrays;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(RobolectricTestRunner.class)
 public class NetworkDispatcherTest {

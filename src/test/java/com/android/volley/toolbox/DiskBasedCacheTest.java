@@ -18,6 +18,7 @@ package com.android.volley.toolbox;
 
 import com.android.volley.Cache;
 import com.android.volley.toolbox.DiskBasedCache.CacheHeader;
+
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -26,7 +27,8 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class DiskBasedCacheTest {
 

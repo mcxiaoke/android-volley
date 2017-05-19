@@ -18,9 +18,8 @@ package com.android.volley.toolbox;
 
 import com.android.volley.Cache;
 import com.android.volley.NetworkResponse;
+import com.android.volley.http.HttpResponse;
 
-import org.apache.http.Header;
-import org.apache.http.message.BasicHeader;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,7 +32,10 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(RobolectricTestRunner.class)
 public class HttpHeaderParserTest {
@@ -272,15 +274,14 @@ public class HttpHeaderParserTest {
 
         long now = System.currentTimeMillis();
 
-        Header[] headersArray = new Header[5];
-        headersArray[0] = new BasicHeader("eTAG", "Yow!");
-        headersArray[1] = new BasicHeader("DATE", rfc1123Date(now));
-        headersArray[2] = new BasicHeader("expires", rfc1123Date(now + ONE_HOUR_MILLIS));
-        headersArray[3] = new BasicHeader("cache-control", "public, max-age=86400");
-        headersArray[4] = new BasicHeader("content-type", "text/plain");
+        HttpResponse testResponse = new HttpResponse(0 , null);
+        testResponse.addHeader("eTAG", "Yow!");
+        testResponse.addHeader("DATE", rfc1123Date(now));
+        testResponse.addHeader("expires", rfc1123Date(now + ONE_HOUR_MILLIS));
+        testResponse.addHeader("cache-control", "public, max-age=86400");
+        testResponse.addHeader("content-type", "text/plain");
 
-        Map<String, String> headers = BasicNetwork.convertHeaders(headersArray);
-        NetworkResponse response = new NetworkResponse(0, null, headers, false);
+        NetworkResponse response = new NetworkResponse(0, null, testResponse.getAllHeaders(), false);
         Cache.Entry entry = HttpHeaderParser.parseCacheHeaders(response);
 
         assertNotNull(entry);

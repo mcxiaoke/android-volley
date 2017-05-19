@@ -31,11 +31,10 @@ import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Cache implementation that caches files directly onto the hard disk in the specified
@@ -560,9 +559,7 @@ public class DiskBasedCache implements Cache {
 
     static Map<String, String> readStringStringMap(InputStream is) throws IOException {
         int size = readInt(is);
-        Map<String, String> result = (size == 0)
-                ? Collections.<String, String>emptyMap()
-                : new HashMap<String, String>(size);
+        Map<String, String> result = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
         for (int i = 0; i < size; i++) {
             String key = readString(is).intern();
             String value = readString(is).intern();
